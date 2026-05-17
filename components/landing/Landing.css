@@ -47,9 +47,14 @@
   padding: 10px 18px; font-size: 14px; font-weight: 600;
   border-radius: 10px; border: 1.5px solid transparent;
   cursor: pointer; white-space: nowrap;
+  text-decoration: none;
   transition: transform .12s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
   font-family: inherit;
+  box-sizing: border-box;
 }
+a.ln-btn { color: inherit; }
+a.ln-btn-primary { color: #fff; }
+a.ln-btn-outline { color: var(--ln-green-700); }
 .ln-btn:hover { transform: translateY(-1px); }
 .ln-btn-lg { padding: 14px 22px; font-size: 15px; border-radius: 12px; }
 .ln-btn-block { width: 100%; }
@@ -901,8 +906,10 @@
 .ln-pub-price.popular .ln-pub-price-note { color: rgba(255, 255, 255, .75); }
 
 .ln-pub-cta {
+  display: inline-flex; align-items: center; justify-content: center;
   padding: 12px 16px; font-size: 14px; font-weight: 700;
   border-radius: 12px; cursor: pointer;
+  text-decoration: none;
   font-family: inherit;
   transition: transform .12s, background .15s, color .15s, border-color .15s;
 }

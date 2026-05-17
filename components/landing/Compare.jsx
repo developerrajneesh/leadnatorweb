@@ -2,6 +2,7 @@
 
 import { FiArrowRight, FiCheck, FiX, FiTrendingUp, FiDollarSign, FiZap, FiShield } from "react-icons/fi";
 import MarketingLayout from "./MarketingLayout";
+import { SignupLink } from "./AppLinks";
 import { useSeo } from "./seo";
 
 export default function Compare({ onGoto }) {
@@ -153,9 +154,9 @@ function Savings({ onGoto }) {
             <strong>₹{savings.toLocaleString("en-IN")} / month</strong>
             <span>That's ₹{(savings * 12).toLocaleString("en-IN")} a year.</span>
           </div>
-          <button className="ln-btn ln-btn-primary ln-btn-lg" onClick={() => onGoto("/signup")}>
+          <SignupLink className="ln-btn ln-btn-primary ln-btn-lg">
             Start saving today <FiArrowRight />
-          </button>
+          </SignupLink>
         </div>
       </div>
     </section>
@@ -208,9 +209,9 @@ function Switching({ onGoto }) {
             <button className="ln-btn ln-btn-primary ln-btn-lg ln-btn-block" onClick={() => onGoto("/contact")}>
               Book a migration call <FiArrowRight />
             </button>
-            <button className="ln-btn ln-btn-outline-dark ln-btn-lg ln-btn-block" onClick={() => onGoto("/signup")}>
+            <SignupLink className="ln-btn ln-btn-outline-dark ln-btn-lg ln-btn-block">
               Try free first
-            </button>
+            </SignupLink>
           </div>
         </div>
       </div>

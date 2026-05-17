@@ -7,6 +7,7 @@ import {
 } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import MarketingLayout from "./MarketingLayout";
+import { appPath } from "@/lib/app-url";
 import { useSeo } from "./seo";
 
 export default function Contact({ onGoto }) {
@@ -63,7 +64,7 @@ function ContactGrid() {
     {
       Icon: FiMessageCircle, title: "In-app support",
       text: "Existing customer? Open a ticket or live-chat the team from inside the dashboard.",
-      cta: "Open dashboard", href: "/login",
+      cta: "Open dashboard", href: appPath("/login"),
       color: "#7c3aed",
     },
   ];

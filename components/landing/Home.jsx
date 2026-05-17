@@ -15,6 +15,7 @@ import MarketingArt from "./MarketingArt";
 import IntegrationsHub from "./IntegrationsHub";
 import AIShowcase from "./AIShowcase";
 import HierarchyFlow from "./HierarchyFlow";
+import { MarketingLink, SignupLink } from "./AppLinks";
 import { useSeo } from "./seo";
 
 export default function Home({ onGoto }) {
@@ -62,12 +63,12 @@ function Hero({ onGoto }) {
           </p>
 
           <div className="ln-hero-cta">
-            <button className="ln-btn ln-btn-primary ln-btn-lg" onClick={() => onGoto("/signup")}>
+            <SignupLink className="ln-btn ln-btn-primary ln-btn-lg">
               Start FREE Trial <FiArrowRight />
-            </button>
-            <button className="ln-btn ln-btn-outline ln-btn-lg" onClick={() => onGoto("/features")}>
+            </SignupLink>
+            <MarketingLink href="/features" className="ln-btn ln-btn-outline ln-btn-lg">
               <FiPieChart /> See all features
-            </button>
+            </MarketingLink>
           </div>
 
           <ul className="ln-hero-check">
@@ -456,9 +457,9 @@ function PricingPreview({ onGoto }) {
                 <span className="num">{p.price}</span>
                 <span className="per">{p.period}</span>
               </div>
-              <button className={`ln-btn ${p.highlight ? "ln-btn-primary" : "ln-btn-outline"} ln-btn-block`} onClick={() => onGoto("/signup")}>
+              <SignupLink className={`ln-btn ${p.highlight ? "ln-btn-primary" : "ln-btn-outline"} ln-btn-block`}>
                 {p.cta}
-              </button>
+              </SignupLink>
               <ul>{p.features.map((f) => <li key={f}><FiCheck /> {f}</li>)}</ul>
             </div>
           ))}
@@ -517,9 +518,9 @@ function CtaBanner({ onGoto }) {
             </ul>
           </div>
           <div className="ln-cta-actions">
-            <button className="ln-btn ln-btn-primary ln-btn-lg ln-btn-block" onClick={() => onGoto("/signup")}>
+            <SignupLink className="ln-btn ln-btn-primary ln-btn-lg ln-btn-block">
               Start FREE Trial <FiArrowRight />
-            </button>
+            </SignupLink>
             <a className="ln-btn ln-btn-outline-dark ln-btn-lg ln-btn-block" href="https://wa.me/917888341096">
               <FaWhatsapp /> Chat on WhatsApp
             </a>

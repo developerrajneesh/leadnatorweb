@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FiArrowRight, FiCheck, FiStar, FiAward, FiHelpCircle, FiZap, FiX } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import MarketingLayout from "./MarketingLayout";
+import { SignupLink } from "./AppLinks";
 import { useSeo } from "./seo";
 
 /* ==========================================================
@@ -152,12 +153,11 @@ function Plans({ onGoto }) {
                   {duration?.months} {duration?.months === 1 ? "month" : "months"}
                 </div>
 
-                <button
+                <SignupLink
                   className={`ln-pub-cta ${p.popular ? "primary" : "outline"}`}
-                  onClick={() => onGoto("/signup")}
                 >
                   {p.popular ? "Get started" : "Choose plan"}
-                </button>
+                </SignupLink>
 
                 <ul className="ln-pub-feat-list">
                   {(p.features || []).map((f) => (

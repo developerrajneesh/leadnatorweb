@@ -9,6 +9,7 @@ import {
 import { FaWhatsapp } from "react-icons/fa";
 import { SiMeta } from "react-icons/si";
 import MarketingLayout from "./MarketingLayout";
+import { SignupLink } from "./AppLinks";
 import { useSeo } from "./seo";
 
 /**
@@ -232,9 +233,9 @@ function CtaBanner({ onGoto }) {
             <p>All features unlocked. No credit card. Setup in 12 minutes.</p>
           </div>
           <div className="ln-cta-actions">
-            <button className="ln-btn ln-btn-primary ln-btn-lg ln-btn-block" onClick={() => onGoto("/signup")}>
+            <SignupLink className="ln-btn ln-btn-primary ln-btn-lg ln-btn-block">
               Start FREE Trial <FiArrowRight />
-            </button>
+            </SignupLink>
             <button className="ln-btn ln-btn-outline-dark ln-btn-lg ln-btn-block" onClick={() => onGoto("/pricing")}>
               See pricing
             </button>
