@@ -1,9 +1,9 @@
-import Home from "@/components/landing/Home";
+import About from "@/components/landing/About";
 import MarketingPageShell from "@/components/landing/MarketingPageShell";
 import { buildPageMetadata } from "@/lib/marketing-seo";
 
-export const metadata = buildPageMetadata("/");
+export const metadata = buildPageMetadata("/about");
 
 export default function Page() {
-  return <MarketingPageShell component={Home} path="/" />;
+  return <MarketingPageShell component={About} path="/about" />;
 }

@@ -71,7 +71,7 @@ export default function IntegrationsHub() {
           </p>
         </div>
 
-        <div className="ln-hub" style={{ height: 600 }}>
+        <div className="ln-hub">
           {/* Left column */}
           <div className="ln-hub-col ln-hub-col-left">
             {LEFT.map((a) => <AppPill key={a.name} {...a} />)}
@@ -176,7 +176,6 @@ export default function IntegrationsHub() {
             <circle cx={HUB_X} cy={HUB_Y} r={HUB_R} fill="#ffffff" stroke="#22c55e" strokeWidth="2" />
             <image
               href="/leadnator_logo.png"
-              xlinkHref="/leadnator_logo.png"
               x={HUB_X - HUB_R * 0.75}
               y={HUB_Y - HUB_R * 0.75}
               width={HUB_R * 1.5}

@@ -55,11 +55,178 @@ const BRANCH_R = 640;  // x of Negative / Long Nurture column
 // of the dark panel. Keeping Y values unchanged inside the flow while
 // trimming empty bottom space gives us balanced vertical padding.
 const px = (x) => `${(x / 900) * 100}%`;
-const py = (y) => `${(y / 780) * 100}%`;
 
-// Edge-y helpers (top / bottom of each element)
-const top    = (row) => Y[row] - H[row];
-const bottom = (row) => Y[row] + H[row];
+const MOBILE_V = 1560;
+const MOBILE_STRETCH = MOBILE_V / 780;
+const YM = Object.fromEntries(
+  Object.entries(Y).map(([k, v]) => [k, Math.round(Number(v) * MOBILE_STRETCH)])
+);
+
+function FlowDiagram({
+  className,
+  viewH,
+  yMap,
+  hMap,
+  chX,
+  acX,
+  cx,
+  bL,
+  bR,
+  grad,
+  channels,
+  actions,
+  days,
+}) {
+  const pctY = (yy) => `${(yy / viewH) * 100}%`;
+  const rowTop = (row) => yMap[row] - hMap[row];
+  const rowBottom = (row) => yMap[row] + hMap[row];
+
+  return (
+    <div className={className}>
+      <svg
+        className="ln-hier-svg"
+        viewBox={`0 0 900 ${viewH}`}
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id={grad.line} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#22c55e" />
+            <stop offset="100%" stopColor="#06b6d4" />
+          </linearGradient>
+          <linearGradient id={grad.pos} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#22c55e" />
+            <stop offset="100%" stopColor="#16a34a" />
+          </linearGradient>
+          <linearGradient id={grad.neg} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ef4444" />
+            <stop offset="100%" stopColor="#b91c1c" />
+          </linearGradient>
+          <filter id={grad.glow} x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+
+        {chX.map((x, i) => (
+          <path
+            key={`ch-${i}`}
+            d={`M ${x} ${rowBottom("channels")} C ${x} ${rowBottom("channels") + 30}, ${cx} ${rowTop("capture") - 30}, ${cx} ${rowTop("capture")}`}
+            stroke={`url(#${grad.line})`} strokeWidth="2" fill="none"
+            filter={`url(#${grad.glow})`} className="lh-flow"
+            style={{ animationDelay: `${i * 0.15}s` }}
+          />
+        ))}
+
+        <line
+          x1={cx} y1={rowBottom("capture")} x2={cx} y2={rowTop("core")}
+          stroke={`url(#${grad.line})`} strokeWidth="2.5"
+          filter={`url(#${grad.glow})`} className="lh-flow"
+        />
+
+        {acX.map((x, i) => (
+          <path
+            key={`ac-${i}`}
+            d={`M ${cx} ${rowBottom("core")} C ${cx} ${rowBottom("core") + 25}, ${x} ${rowTop("actions") - 25}, ${x} ${rowTop("actions")}`}
+            stroke={`url(#${grad.line})`} strokeWidth="2" fill="none"
+            filter={`url(#${grad.glow})`} className="lh-flow"
+            style={{ animationDelay: `${i * 0.12}s` }}
+          />
+        ))}
+
+        {acX.map((x, i) => (
+          <path
+            key={`aq-${i}`}
+            d={`M ${x} ${rowBottom("actions")} C ${x} ${rowBottom("actions") + 20}, ${cx} ${rowTop("qualify") - 20}, ${cx} ${rowTop("qualify")}`}
+            stroke={`url(#${grad.line})`} strokeWidth="2" fill="none"
+            filter={`url(#${grad.glow})`} className="lh-flow"
+            style={{ animationDelay: `${i * 0.1 + 0.3}s` }}
+          />
+        ))}
+
+        <line
+          x1={cx} y1={rowBottom("qualify")} x2={cx} y2={rowTop("nurture")}
+          stroke={`url(#${grad.line})`} strokeWidth="2.5"
+          filter={`url(#${grad.glow})`} className="lh-flow"
+        />
+
+        <path
+          d={`M ${cx} ${rowBottom("nurture")} C ${cx} ${rowBottom("nurture") + 30}, ${bL} ${rowTop("branch") - 30}, ${bL} ${rowTop("branch")}`}
+          stroke={`url(#${grad.pos})`} strokeWidth="2.5" fill="none"
+          filter={`url(#${grad.glow})`} className="lh-flow"
+        />
+        <path
+          d={`M ${cx} ${rowBottom("nurture")} C ${cx} ${rowBottom("nurture") + 30}, ${bR} ${rowTop("branch") - 30}, ${bR} ${rowTop("branch")}`}
+          stroke={`url(#${grad.neg})`} strokeWidth="2.5" fill="none"
+          filter={`url(#${grad.glow})`} className="lh-flow"
+        />
+
+        <line
+          x1={bL} y1={rowBottom("branch")} x2={bL} y2={rowTop("outcomes")}
+          stroke={`url(#${grad.pos})`} strokeWidth="2.5"
+          filter={`url(#${grad.glow})`} className="lh-flow"
+        />
+        <line
+          x1={bR} y1={rowBottom("branch")} x2={bR} y2={rowTop("outcomes")}
+          stroke={`url(#${grad.neg})`} strokeWidth="2.5"
+          filter={`url(#${grad.glow})`} className="lh-flow"
+        />
+      </svg>
+
+      <div className="lh-abs lh-channels-row" style={{ left: "50%", top: pctY(yMap.channels) }}>
+        {channels.map((c, i) => (
+          <div key={i} className="lh-channel" style={{ boxShadow: `0 0 20px ${c.color}55` }}>
+            <c.Icon style={{ color: c.color }} />
+          </div>
+        ))}
+      </div>
+
+      <div className="lh-abs lh-capture" style={{ left: "50%", top: pctY(yMap.capture) }}>
+        <span>Lead Capture</span>
+      </div>
+
+      <div className="lh-abs lh-core" style={{ left: "50%", top: pctY(yMap.core) }}>
+        <span className="lh-core-dot" />
+        Leadnator API Automation
+      </div>
+
+      {actions.map((a, i) => (
+        <div
+          key={a.label}
+          className="lh-abs lh-action"
+          style={{ left: px(acX[i]), top: pctY(yMap.actions), background: a.color }}
+        >
+          <a.Icon />
+          <span>{a.label}</span>
+        </div>
+      ))}
+
+      <div className="lh-abs lh-pill lh-qualify" style={{ left: "50%", top: pctY(yMap.qualify) }}>
+        <FiCheck /> Auto Qualify Lead
+      </div>
+
+      <div className="lh-abs lh-nurture-wrap" style={{ left: "50%", top: pctY(yMap.nurture) }}>
+        <div className="lh-days">
+          {days.slice(0, 2).map((d) => (
+            <span key={d} className="lh-day"><FaWhatsapp /> {d}</span>
+          ))}
+        </div>
+        <div className="lh-pill lh-nurture">Auto Nurture</div>
+        <div className="lh-days">
+          {days.slice(2).map((d) => (
+            <span key={d} className="lh-day"><FaWhatsapp /> {d}</span>
+          ))}
+        </div>
+      </div>
+
+      <div className="lh-abs lh-branch-node pos" style={{ left: px(bL), top: pctY(yMap.branch) }}>Positive</div>
+      <div className="lh-abs lh-branch-node neg" style={{ left: px(bR), top: pctY(yMap.branch) }}>Negative</div>
+
+      <div className="lh-abs lh-outcome pos" style={{ left: px(bL), top: pctY(yMap.outcomes) }}>Lead Won</div>
+      <div className="lh-abs lh-outcome neg" style={{ left: px(bR), top: pctY(yMap.outcomes) }}>Long Nurture</div>
+    </div>
+  );
+}
 
 export default function HierarchyFlow() {
   const CHANNELS_TOP = [
@@ -162,190 +329,38 @@ export default function HierarchyFlow() {
           </div>
         </div>
 
-        {/* ===== RIGHT: animated flow diagram ===== */}
-        <div className="ln-hier">
-          {/* =================== SVG CONNECTORS =================== */}
-          <svg
-            className="ln-hier-svg"
-            viewBox="0 0 900 780"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <defs>
-              <linearGradient id="lh-line" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%"   stopColor="#22c55e" />
-                <stop offset="100%" stopColor="#06b6d4" />
-              </linearGradient>
-              <linearGradient id="lh-pos" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#22c55e" />
-                <stop offset="100%" stopColor="#16a34a" />
-              </linearGradient>
-              <linearGradient id="lh-neg" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ef4444" />
-                <stop offset="100%" stopColor="#b91c1c" />
-              </linearGradient>
-              <filter id="lh-glow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="2" result="blur" />
-                <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-              </filter>
-            </defs>
-
-            {/* 1. Channel icons → Lead Capture (fan-in bezier) */}
-            {CH_X.map((x, i) => {
-              const sy = bottom("channels");          // from icon bottom
-              const ty = top("capture");              // into capture top
-              return (
-                <path
-                  key={`ch-${i}`}
-                  d={`M ${x} ${sy} C ${x} ${sy + 30}, ${CENTER_X} ${ty - 30}, ${CENTER_X} ${ty}`}
-                  stroke="url(#lh-line)" strokeWidth="2" fill="none"
-                  filter="url(#lh-glow)" className="lh-flow"
-                  style={{ animationDelay: `${i * 0.15}s` }}
-                />
-              );
-            })}
-
-            {/* 2. Lead Capture → Leadnator API (straight) */}
-            <line
-              x1={CENTER_X} y1={bottom("capture")}
-              x2={CENTER_X} y2={top("core")}
-              stroke="url(#lh-line)" strokeWidth="2.5"
-              filter="url(#lh-glow)" className="lh-flow"
-            />
-
-            {/* 3. Leadnator API → 5 action boxes (fan-out bezier) */}
-            {AC_X.map((x, i) => {
-              const sy = bottom("core");
-              const ty = top("actions");
-              return (
-                <path
-                  key={`ac-${i}`}
-                  d={`M ${CENTER_X} ${sy} C ${CENTER_X} ${sy + 25}, ${x} ${ty - 25}, ${x} ${ty}`}
-                  stroke="url(#lh-line)" strokeWidth="2" fill="none"
-                  filter="url(#lh-glow)" className="lh-flow"
-                  style={{ animationDelay: `${i * 0.12}s` }}
-                />
-              );
-            })}
-
-            {/* 4. 5 action boxes → Auto Qualify (fan-in bezier) */}
-            {AC_X.map((x, i) => {
-              const sy = bottom("actions");
-              const ty = top("qualify");
-              return (
-                <path
-                  key={`aq-${i}`}
-                  d={`M ${x} ${sy} C ${x} ${sy + 20}, ${CENTER_X} ${ty - 20}, ${CENTER_X} ${ty}`}
-                  stroke="url(#lh-line)" strokeWidth="2" fill="none"
-                  filter="url(#lh-glow)" className="lh-flow"
-                  style={{ animationDelay: `${i * 0.1 + 0.3}s` }}
-                />
-              );
-            })}
-
-            {/* 5. Auto Qualify → Auto Nurture */}
-            <line
-              x1={CENTER_X} y1={bottom("qualify")}
-              x2={CENTER_X} y2={top("nurture")}
-              stroke="url(#lh-line)" strokeWidth="2.5"
-              filter="url(#lh-glow)" className="lh-flow"
-            />
-
-            {/* 6. Auto Nurture → Positive + Negative (split) */}
-            <path
-              d={`M ${CENTER_X} ${bottom("nurture")}
-                 C ${CENTER_X} ${bottom("nurture") + 30},
-                   ${BRANCH_L} ${top("branch") - 30},
-                   ${BRANCH_L} ${top("branch")}`}
-              stroke="url(#lh-pos)" strokeWidth="2.5" fill="none"
-              filter="url(#lh-glow)" className="lh-flow"
-            />
-            <path
-              d={`M ${CENTER_X} ${bottom("nurture")}
-                 C ${CENTER_X} ${bottom("nurture") + 30},
-                   ${BRANCH_R} ${top("branch") - 30},
-                   ${BRANCH_R} ${top("branch")}`}
-              stroke="url(#lh-neg)" strokeWidth="2.5" fill="none"
-              filter="url(#lh-glow)" className="lh-flow"
-            />
-
-            {/* 7. Positive → Lead Won, Negative → Long Nurture */}
-            <line
-              x1={BRANCH_L} y1={bottom("branch")}
-              x2={BRANCH_L} y2={top("outcomes")}
-              stroke="url(#lh-pos)" strokeWidth="2.5"
-              filter="url(#lh-glow)" className="lh-flow"
-            />
-            <line
-              x1={BRANCH_R} y1={bottom("branch")}
-              x2={BRANCH_R} y2={top("outcomes")}
-              stroke="url(#lh-neg)" strokeWidth="2.5"
-              filter="url(#lh-glow)" className="lh-flow"
-            />
-          </svg>
-
-          {/* =================== DOM ELEMENTS =================== */}
-          {/* Channel icons (row 1) */}
-          {CHANNELS_TOP.map((c, i) => (
-            <div
-              key={i}
-              className="lh-abs lh-channel"
-              style={{ left: px(CH_X[i]), top: py(Y.channels), boxShadow: `0 0 20px ${c.color}55` }}
-            >
-              <c.Icon style={{ color: c.color }} />
-            </div>
-          ))}
-
-          {/* Lead Capture trapezoid */}
-          <div className="lh-abs lh-capture" style={{ left: "50%", top: py(Y.capture) }}>
-            <span>Lead Capture</span>
-          </div>
-
-          {/* Leadnator API Automation */}
-          <div className="lh-abs lh-core" style={{ left: "50%", top: py(Y.core) }}>
-            <span className="lh-core-dot" />
-            Leadnator API Automation
-          </div>
-
-          {/* 5 action boxes */}
-          {ACTIONS.map((a, i) => (
-            <div
-              key={a.label}
-              className="lh-abs lh-action"
-              style={{ left: px(AC_X[i]), top: py(Y.actions), background: a.color }}
-            >
-              <a.Icon />
-              <span>{a.label}</span>
-            </div>
-          ))}
-
-          {/* Auto Qualify Lead */}
-          <div className="lh-abs lh-pill lh-qualify" style={{ left: "50%", top: py(Y.qualify) }}>
-            <FiCheck /> Auto Qualify Lead
-          </div>
-
-          {/* Auto Nurture + day tags */}
-          <div className="lh-abs lh-nurture-wrap" style={{ left: "50%", top: py(Y.nurture) }}>
-            <div className="lh-days">
-              {DAYS.slice(0, 2).map((d) => (
-                <span key={d} className="lh-day"><FaWhatsapp /> {d}</span>
-              ))}
-            </div>
-            <div className="lh-pill lh-nurture">Auto Nurture</div>
-            <div className="lh-days">
-              {DAYS.slice(2).map((d) => (
-                <span key={d} className="lh-day"><FaWhatsapp /> {d}</span>
-              ))}
-            </div>
-          </div>
-
-          {/* Positive / Negative branch */}
-          <div className="lh-abs lh-branch-node pos" style={{ left: px(BRANCH_L), top: py(Y.branch) }}>Positive</div>
-          <div className="lh-abs lh-branch-node neg" style={{ left: px(BRANCH_R), top: py(Y.branch) }}>Negative</div>
-
-          {/* Outcomes */}
-          <div className="lh-abs lh-outcome pos" style={{ left: px(BRANCH_L), top: py(Y.outcomes) }}>Lead Won</div>
-          <div className="lh-abs lh-outcome neg" style={{ left: px(BRANCH_R), top: py(Y.outcomes) }}>Long Nurture</div>
+        {/* ===== Flow diagram ===== */}
+        <div className="ln-hier-viewport">
+          <FlowDiagram
+            className="ln-hier ln-hier-diagram ln-hier-diagram--desktop"
+            viewH={780}
+            yMap={Y}
+            hMap={H}
+            chX={CH_X}
+            acX={AC_X}
+            cx={CENTER_X}
+            bL={BRANCH_L}
+            bR={BRANCH_R}
+            grad={{ line: "lh-line", pos: "lh-pos", neg: "lh-neg", glow: "lh-glow" }}
+            channels={CHANNELS_TOP}
+            actions={ACTIONS}
+            days={DAYS}
+          />
+          <FlowDiagram
+            className="ln-hier ln-hier-diagram ln-hier-diagram--mobile"
+            viewH={MOBILE_V}
+            yMap={YM}
+            hMap={H}
+            chX={CH_X}
+            acX={AC_X}
+            cx={CENTER_X}
+            bL={BRANCH_L}
+            bR={BRANCH_R}
+            grad={{ line: "lh-m-line", pos: "lh-m-pos", neg: "lh-m-neg", glow: "lh-m-glow" }}
+            channels={CHANNELS_TOP}
+            actions={ACTIONS}
+            days={DAYS}
+          />
         </div>
       </div>
     </section>

@@ -60,7 +60,17 @@ export const SITELINK_NAV = [
   },
 ] as const;
 
-export type MarketingPath = "/" | (typeof SITELINK_NAV)[number]["path"];
+const LEGAL_PATHS = [
+  "/about",
+  "/privacy-policy",
+  "/terms",
+  "/refund-policy",
+] as const;
+
+export type MarketingPath =
+  | "/"
+  | (typeof SITELINK_NAV)[number]["path"]
+  | (typeof LEGAL_PATHS)[number];
 
 const BREADCRUMB_LABELS: Record<MarketingPath, string> = {
   "/": "Home",
@@ -71,6 +81,10 @@ const BREADCRUMB_LABELS: Record<MarketingPath, string> = {
   "/faq": "FAQ",
   "/api-docs": "Developer API",
   "/contact": "Contact",
+  "/about": "About Us",
+  "/privacy-policy": "Privacy Policy",
+  "/terms": "Terms & Conditions",
+  "/refund-policy": "Refund & Cancellation Policy",
 };
 
 export const MARKETING_PAGES: Array<{
@@ -155,6 +169,42 @@ export const MARKETING_PAGES: Array<{
       "Contact Leadnator for demos, sales and support. WhatsApp +917888341096, phone support, offices in India, Singapore, UAE and USA. Enterprise onboarding available.",
     keywords: "Leadnator contact, WhatsApp CRM demo India, enterprise CRM sales",
     priority: 0.6,
+    changefreq: "yearly",
+  },
+  {
+    path: "/about",
+    title: "About Us — India's AI Growth CRM for WhatsApp & Meta Ads",
+    description:
+      "About Leadnator: our mission to unify WhatsApp Business API, Meta Ads, email marketing and CRM for Indian businesses. Offices in India, Singapore, UAE and USA.",
+    keywords: "About Leadnator, WhatsApp CRM company India, AI growth platform",
+    priority: 0.5,
+    changefreq: "yearly",
+  },
+  {
+    path: "/privacy-policy",
+    title: "Privacy Policy — How Leadnator Protects Your Data",
+    description:
+      "Leadnator Privacy Policy: data collection, WhatsApp & Meta processing, security, retention and your rights. Contact privacy@leadnator.com for requests.",
+    keywords: "Leadnator privacy policy, WhatsApp CRM data privacy",
+    priority: 0.3,
+    changefreq: "yearly",
+  },
+  {
+    path: "/terms",
+    title: "Terms & Conditions — Leadnator Service Agreement",
+    description:
+      "Leadnator Terms & Conditions: subscriptions, acceptable use, WhatsApp API obligations, liability limits and governing law for our CRM platform.",
+    keywords: "Leadnator terms of service, WhatsApp CRM terms India",
+    priority: 0.3,
+    changefreq: "yearly",
+  },
+  {
+    path: "/refund-policy",
+    title: "Refund & Cancellation Policy — Leadnator Billing",
+    description:
+      "Leadnator refund policy: cancel monthly plans anytime, pro-rata yearly refunds within 14 days, WhatsApp wallet credits and how to request billing support.",
+    keywords: "Leadnator refund policy, CRM cancellation India",
+    priority: 0.3,
     changefreq: "yearly",
   },
 ];

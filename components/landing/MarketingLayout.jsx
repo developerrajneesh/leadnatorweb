@@ -87,7 +87,7 @@ function Footer() {
   return (
     <footer className="ln-footer">
       <nav className="ln-container ln-footer-grid" aria-label="Site links">
-        <div>
+        <div className="ln-footer-brand">
           <Link href="/" className="ln-brand ln-brand-light">
             <span className="ln-brand-lead">Lead</span><span className="ln-brand-nator">nator</span>
           </Link>
@@ -109,51 +109,57 @@ function Footer() {
           </div>
         </div>
 
-        <FooterCol
-          title="Product"
-          items={[
-            { label: "Features",        to: "/features" },
-            { label: "Pricing",         to: "/pricing" },
-            { label: "Compare",         to: "/compare" },
-            { label: "WhatsApp API",    to: "/features#whatsapp" },
-            { label: "Meta Ads",        to: "/features#meta" },
-            { label: "Email Marketing", to: "/features#email" },
-            { label: "AI Studio",       to: "/features#ai" },
-          ]}
-        />
-        <FooterCol
-          title="Resources"
-          items={[
-            { label: "Documentation", to: "/api-docs" },
-            { label: "API Reference", to: "/api-docs" },
-            { label: "FAQ",           to: "/faq" },
-            { label: "Partners",      to: "/partners" },
-            { label: "Support",       to: "/contact" },
-          ]}
-        />
-        <FooterCol
-          title="Company"
-          items={[
-            { label: "About",   to: "/contact" },
-            { label: "Careers", to: "/contact" },
-            { label: "Contact", to: "/contact" },
-            { label: "Privacy", to: "/contact" },
-            { label: "Terms",   to: "/contact" },
-          ]}
-        />
+        <div className="ln-footer-links">
+          <FooterCol
+            className="ln-footer-col-product"
+            title="Product"
+            items={[
+              { label: "Features",        to: "/features" },
+              { label: "Pricing",         to: "/pricing" },
+              { label: "Compare",         to: "/compare" },
+              { label: "WhatsApp API",    to: "/features#whatsapp" },
+              { label: "Meta Ads",        to: "/features#meta" },
+              { label: "Email Marketing", to: "/features#email" },
+              { label: "AI Studio",       to: "/features#ai" },
+            ]}
+          />
+          <FooterCol
+            className="ln-footer-col-resources"
+            title="Resources"
+            items={[
+              { label: "Documentation", to: "/api-docs" },
+              { label: "API Reference", to: "/api-docs" },
+              { label: "FAQ",           to: "/faq" },
+              { label: "Partners",      to: "/partners" },
+              { label: "Support",       to: "/contact" },
+            ]}
+          />
+          <FooterCol
+            className="ln-footer-col-company"
+            title="Company"
+            items={[
+              { label: "Home",                      to: "/" },
+              { label: "About Us",                  to: "/about" },
+              { label: "Contact Us",                to: "/contact" },
+              { label: "Privacy Policy",            to: "/privacy-policy" },
+              { label: "Terms & Conditions",        to: "/terms" },
+              { label: "Refund & Cancellation",     to: "/refund-policy" },
+            ]}
+          />
+        </div>
       </nav>
 
       <div className="ln-container ln-footer-bottom">
-        <span>© {new Date().getFullYear()} Leadnator. Made with ❤️ in India.</span>
+        <span suppressHydrationWarning>© {new Date().getFullYear()} Leadnator. Made with ❤️ in India.</span>
         <span className="ln-footer-regions">India · Singapore · UAE · USA</span>
       </div>
     </footer>
   );
 }
 
-function FooterCol({ title, items }) {
+function FooterCol({ title, items, className = "" }) {
   return (
-    <div>
+    <div className={`ln-footer-col ${className}`.trim()}>
       <h4>{title}</h4>
       <ul>
         {items.map((i) => (

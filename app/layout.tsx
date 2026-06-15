@@ -33,10 +33,6 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
   },
-  verification: {
-    // Add tokens from Google Search Console when ready:
-    // google: "your-verification-code",
-  },
 };
 
 export default function RootLayout({
@@ -45,10 +41,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-IN">
-      <body>
-        <GlobalStructuredData />
-        {children}
+    <html lang="en-IN" suppressHydrationWarning>
+      <body suppressHydrationWarning>
+        <div id="ln-app">
+          <GlobalStructuredData />
+          {children}
+        </div>
       </body>
     </html>
   );

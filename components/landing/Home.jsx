@@ -252,9 +252,9 @@ function ModuleGrid({ onGoto }) {
               <ul>
                 {bullets.map((b) => <li key={b}><FiCheck /> {b}</li>)}
               </ul>
-              <a onClick={() => onGoto(`/features#${key}`)} className="ln-mod-link">
+              <MarketingLink href={`/features#${key}`} className="ln-mod-link">
                 Learn more <FiArrowRight />
-              </a>
+              </MarketingLink>
             </article>
           ))}
         </div>
@@ -465,7 +465,7 @@ function PricingPreview({ onGoto }) {
           ))}
         </div>
         <div style={{ textAlign: "center", marginTop: 28 }}>
-          <a onClick={() => onGoto("/pricing")} className="ln-link-arrow">See full pricing & feature matrix <FiArrowRight /></a>
+          <MarketingLink href="/pricing" className="ln-link-arrow">See full pricing & feature matrix <FiArrowRight /></MarketingLink>
         </div>
       </div>
     </section>
@@ -495,7 +495,7 @@ function FaqPreview({ onGoto }) {
           ))}
         </div>
         <div style={{ textAlign: "center", marginTop: 24 }}>
-          <a onClick={() => onGoto("/faq")} className="ln-link-arrow">View all FAQs <FiArrowRight /></a>
+          <MarketingLink href="/faq" className="ln-link-arrow">View all FAQs <FiArrowRight /></MarketingLink>
         </div>
       </div>
     </section>
