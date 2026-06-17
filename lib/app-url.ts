@@ -1,21 +1,16 @@
 /** React app (login, signup, dashboard) — separate from this marketing site. */
-const PRODUCTION_APP_URL = "https://leadnatorapp.codelatentlabs.com";
+const APP_URL = "https://app.leadnator.com";
+
+export const APP_LOGIN_URL = `${APP_URL}/login`;
+export const APP_SIGNUP_URL = `${APP_URL}/signup`;
 
 export function appBaseUrl(): string {
-  const fallback =
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:5173"
-      : PRODUCTION_APP_URL;
-  const base = process.env.NEXT_PUBLIC_APP_URL || fallback;
-  return base.replace(/\/$/, "");
+  return APP_URL;
 }
-
-export const APP_LOGIN_URL = () => appPath("/login");
-export const APP_SIGNUP_URL = () => appPath("/signup");
 
 export function appPath(path: string): string {
   const p = path.startsWith("/") ? path : `/${path}`;
-  return `${appBaseUrl()}${p}`;
+  return `${APP_URL}${p}`;
 }
 
 export const AUTH_APP_PATHS = ["/login", "/signup", "/reset-password"] as const;

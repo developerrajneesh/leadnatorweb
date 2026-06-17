@@ -7,7 +7,7 @@ import {
 } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import MarketingLayout from "./MarketingLayout";
-import { appPath } from "@/lib/app-url";
+import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/app-url";
 import { useSeo } from "./seo";
 
 export default function Contact({ onGoto }) {
@@ -62,9 +62,15 @@ function ContactGrid() {
       color: "#ea4335",
     },
     {
+      Icon: FiBriefcase, title: "New to Leadnator?",
+      text: "Create your free account in under 30 seconds. No credit card required to get started.",
+      cta: "Sign up free", href: APP_SIGNUP_URL,
+      color: "#0ea5e9",
+    },
+    {
       Icon: FiMessageCircle, title: "In-app support",
       text: "Existing customer? Open a ticket or live-chat the team from inside the dashboard.",
-      cta: "Open dashboard", href: appPath("/login"),
+      cta: "Open dashboard", href: APP_LOGIN_URL,
       color: "#7c3aed",
     },
   ];

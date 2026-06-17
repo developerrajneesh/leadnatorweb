@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { appPath } from "@/lib/app-url";
+import { APP_SIGNUP_URL } from "@/lib/app-url";
 import {
   FiMessageSquare, FiPhoneCall, FiMail, FiCheck, FiArrowRight,
   FiZap, FiTarget, FiTrendingUp,
@@ -320,7 +320,7 @@ export default function HierarchyFlow() {
           </div>
 
           <div className="ln-hier-cta-row">
-            <a href={appPath("/signup")} className="ln-btn ln-btn-primary">
+            <a href={APP_SIGNUP_URL} className="ln-btn ln-btn-primary">
               Start your flow <FiArrowRight />
             </a>
             <Link href="/features" className="ln-link-arrow">

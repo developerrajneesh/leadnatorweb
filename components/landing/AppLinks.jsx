@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { appPath } from "@/lib/app-url";
+import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/app-url";
 
 /** Primary CTA — always opens the live app signup page. */
 export function SignupLink({ className, children, ...rest }) {
   return (
-    <a href={appPath("/signup")} className={className} {...rest}>
+    <a href={APP_SIGNUP_URL} className={className} rel="nofollow" {...rest}>
       {children}
     </a>
   );
@@ -14,7 +14,7 @@ export function SignupLink({ className, children, ...rest }) {
 
 export function LoginLink({ className, children, ...rest }) {
   return (
-    <a href={appPath("/login")} className={className} rel="nofollow" {...rest}>
+    <a href={APP_LOGIN_URL} className={className} rel="nofollow" {...rest}>
       {children}
     </a>
   );

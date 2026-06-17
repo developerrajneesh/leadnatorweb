@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { FiArrowRight, FiPhone, FiChevronDown } from "react-icons/fi";
 import { FaWhatsapp, FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa";
-import { appPath } from "@/lib/app-url";
+import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/app-url";
 import "./Landing.css";
 
 export default function MarketingLayout({ currentPath, children }) {
@@ -67,10 +67,10 @@ function Nav({ currentPath }) {
         </nav>
 
         <div className="ln-nav-cta">
-          <a className="ln-btn ln-btn-ghost" href={appPath("/login")} rel="nofollow">
+          <a className="ln-btn ln-btn-ghost" href={APP_LOGIN_URL} rel="nofollow">
             Sign in
           </a>
-          <a className="ln-btn ln-btn-primary" href={appPath("/signup")} rel="nofollow">
+          <a className="ln-btn ln-btn-primary" href={APP_SIGNUP_URL} rel="nofollow">
             Start FREE Trial <FiArrowRight />
           </a>
         </div>
@@ -141,6 +141,8 @@ function Footer() {
               { label: "Home",                      to: "/" },
               { label: "About Us",                  to: "/about" },
               { label: "Contact Us",                to: "/contact" },
+              { label: "Sign in",                   href: APP_LOGIN_URL, external: true },
+              { label: "Sign up",                   href: APP_SIGNUP_URL, external: true },
               { label: "Privacy Policy",            to: "/privacy-policy" },
               { label: "Terms & Conditions",        to: "/terms" },
               { label: "Refund & Cancellation",     to: "/refund-policy" },
@@ -164,7 +166,11 @@ function FooterCol({ title, items, className = "" }) {
       <ul>
         {items.map((i) => (
           <li key={i.label}>
-            <Link href={i.to}>{i.label}</Link>
+            {i.external ? (
+              <a href={i.href} rel="nofollow">{i.label}</a>
+            ) : (
+              <Link href={i.to}>{i.label}</Link>
+            )}
           </li>
         ))}
       </ul>
