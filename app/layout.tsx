@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { GlobalStructuredData } from "@/components/seo/StructuredData";
-import "@/components/landing/Landing.css";
+import "@/styles/marketing.css";
 import "./globals.css";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, THEME_COLOR } from "@/lib/marketing-seo";
+
+/** Single favicon source — change only here. File lives in /public/favicon.png */
+const FAVICON = "/favicon.png";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -20,6 +23,11 @@ export const metadata: Metadata = {
   description:
     "All-in-one AI growth CRM — WhatsApp Cloud API, Meta Ads, Email, leads pipeline, AI tools and more.",
   applicationName: SITE_NAME,
+  icons: {
+    icon: FAVICON,
+    shortcut: FAVICON,
+    apple: FAVICON,
+  },
   openGraph: {
     type: "website",
     locale: "en_IN",

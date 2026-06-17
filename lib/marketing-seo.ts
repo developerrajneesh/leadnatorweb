@@ -58,7 +58,36 @@ export const SITELINK_NAV = [
     description:
       "Talk to sales or support. WhatsApp, phone and offices in India, Singapore, UAE and USA.",
   },
+  {
+    path: "/about",
+    name: "About Us",
+    description:
+      "Our mission, team and global offices — building the all-in-one growth CRM for Indian businesses.",
+  },
+  {
+    path: "/privacy-policy",
+    name: "Privacy Policy",
+    description:
+      "How Leadnator collects, uses, stores and protects your personal and business data.",
+  },
+  {
+    path: "/terms",
+    name: "Terms & Conditions",
+    description:
+      "Subscription terms, acceptable use, WhatsApp API obligations and service agreements.",
+  },
+  {
+    path: "/refund-policy",
+    name: "Refund & Cancellation",
+    description:
+      "Refund eligibility, cancellation steps and billing policy for Leadnator subscriptions.",
+  },
 ] as const;
+
+/** Main pages Google typically shows as sitelinks (excludes legal). */
+export const PRIMARY_SITELINKS = SITELINK_NAV.filter(
+  (item) => !["/privacy-policy", "/terms", "/refund-policy"].includes(item.path),
+);
 
 const LEGAL_PATHS = [
   "/about",
@@ -69,11 +98,13 @@ const LEGAL_PATHS = [
 
 export type MarketingPath =
   | "/"
+  | "/site-map"
   | (typeof SITELINK_NAV)[number]["path"]
   | (typeof LEGAL_PATHS)[number];
 
 const BREADCRUMB_LABELS: Record<MarketingPath, string> = {
   "/": "Home",
+  "/site-map": "Sitemap",
   "/features": "Features",
   "/pricing": "Pricing",
   "/partners": "Partners",
@@ -170,6 +201,15 @@ export const MARKETING_PAGES: Array<{
     keywords: "Leadnator contact, WhatsApp CRM demo India, enterprise CRM sales",
     priority: 0.6,
     changefreq: "yearly",
+  },
+  {
+    path: "/site-map",
+    title: "Sitemap — All Leadnator Pages",
+    description:
+      "Complete sitemap of Leadnator marketing pages: features, pricing, FAQ, API docs, partners, compare, contact and legal policies.",
+    keywords: "Leadnator sitemap, site navigation",
+    priority: 0.4,
+    changefreq: "monthly",
   },
   {
     path: "/about",
@@ -438,6 +478,13 @@ export function buildGlobalJsonLd() {
           "All-in-one AI growth CRM — WhatsApp Cloud API, Meta Ads, email marketing and lead management.",
         publisher: { "@id": `${SITE_URL}/#organization` },
         inLanguage: "en-IN",
+        hasPart: PRIMARY_SITELINKS.map((item) => ({
+          "@type": "WebPage",
+          "@id": `${absoluteUrl(item.path)}#webpage`,
+          name: item.name,
+          description: item.description,
+          url: absoluteUrl(item.path),
+        })),
         potentialAction: {
           "@type": "SearchAction",
           target: {
@@ -460,6 +507,12 @@ export function buildGlobalJsonLd() {
           url: absoluteUrl(item.path),
         })),
       },
+      ...SITELINK_NAV.map((item) => ({
+        "@type": "SiteNavigationElement",
+        name: item.name,
+        description: item.description,
+        url: absoluteUrl(item.path),
+      })),
     ],
   };
 }

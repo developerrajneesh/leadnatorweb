@@ -1,4 +1,4 @@
-/* Marketing pages use Landing.css; keep globals minimal. */
+/* Global reset — marketing styles in styles/marketing.css */
 html,
 body {
   margin: 0;
