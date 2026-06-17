@@ -20,10 +20,6 @@ export const metadata: Metadata = {
   description:
     "All-in-one AI growth CRM — WhatsApp Cloud API, Meta Ads, Email, leads pipeline, AI tools and more.",
   applicationName: SITE_NAME,
-  icons: {
-    icon: "/fev.png",
-    apple: "/fev.png",
-  },
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -42,10 +38,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-IN" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/fev.png" type="image/png" sizes="any" />
-        <link rel="apple-touch-icon" href="/fev.png" />
-      </head>
       <body suppressHydrationWarning>
         <div id="ln-app">
           <GlobalStructuredData />
