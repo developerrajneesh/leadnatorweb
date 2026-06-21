@@ -115,15 +115,29 @@ function Form() {
   const [form, setForm] = useState({ name: "", email: "", company: "", interest: "Sales", message: "" });
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
   async function submit(e) {
     e.preventDefault();
     setBusy(true);
-    // Placeholder submit — wire to your backend when a /api/public/contact
-    // endpoint is ready. For now we just open the mail client as a fallback.
-    await new Promise((r) => setTimeout(r, 700));
-    setSent(true);
-    setBusy(false);
+    setError("");
+    try {
+      const res = await fetch("/api/public/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Could not send your message. Please try again.");
+        return;
+      }
+      setSent(true);
+    } catch {
+      setError("Could not send your message. Please try again.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -187,6 +201,7 @@ function Form() {
               <span>Message *</span>
               <textarea required rows="5" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Tell us about your use case, team size, current tools…" />
             </label>
+            {error ? <p className="ln-form-error">{error}</p> : null}
             <button type="submit" className="ln-btn ln-btn-primary ln-btn-lg ln-btn-block" disabled={busy}>
               {busy ? "Sending…" : "Send message"} <FiArrowRight />
             </button>

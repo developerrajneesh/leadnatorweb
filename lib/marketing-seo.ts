@@ -47,6 +47,12 @@ export const SITELINK_NAV = [
       "Answers about WhatsApp Business API setup, Meta Ads, email SMTP, billing, security and integrations.",
   },
   {
+    path: "/blog",
+    name: "Blog",
+    description:
+      "WhatsApp CRM tips, Meta Ads playbooks, product updates and growth stories from the Leadnator team.",
+  },
+  {
     path: "/api-docs",
     name: "Developer API",
     description:
@@ -99,12 +105,14 @@ const LEGAL_PATHS = [
 export type MarketingPath =
   | "/"
   | "/site-map"
+  | "/blog"
   | (typeof SITELINK_NAV)[number]["path"]
   | (typeof LEGAL_PATHS)[number];
 
 const BREADCRUMB_LABELS: Record<MarketingPath, string> = {
   "/": "Home",
   "/site-map": "Sitemap",
+  "/blog": "Blog",
   "/features": "Features",
   "/pricing": "Pricing",
   "/partners": "Partners",
@@ -183,6 +191,15 @@ export const MARKETING_PAGES: Array<{
     keywords: "WhatsApp Business API FAQ, WhatsApp CRM setup India, Meta Ads CRM FAQ",
     priority: 0.7,
     changefreq: "monthly",
+  },
+  {
+    path: "/blog",
+    title: "Blog — WhatsApp CRM, Meta Ads & Growth Tips",
+    description:
+      "Leadnator blog: WhatsApp Business API guides, Meta Ads playbooks, CRM tips, product updates and growth stories for Indian businesses.",
+    keywords: "WhatsApp CRM blog, Meta Ads tips India, lead generation blog, Leadnator updates",
+    priority: 0.8,
+    changefreq: "weekly",
   },
   {
     path: "/api-docs",

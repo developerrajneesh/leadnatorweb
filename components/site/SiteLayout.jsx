@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FiArrowRight, FiPhone, FiChevronDown } from "react-icons/fi";
 import { FaWhatsapp, FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa";
 import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/app-url";
+import PageViewTracker from "@/components/analytics/PageViewTracker";
 
 export default function SiteLayout({ children }) {
   const currentPath = usePathname() || "";
@@ -13,6 +14,9 @@ export default function SiteLayout({ children }) {
     <div className="ln">
       <Topbar />
       <Nav currentPath={currentPath} />
+      <Suspense fallback={null}>
+        <PageViewTracker />
+      </Suspense>
       {children}
       <Footer />
       <FloatingWhatsApp />
@@ -42,6 +46,7 @@ function Nav({ currentPath }) {
     { to: "/",         label: "Home" },
     { to: "/features", label: "Features" },
     { to: "/pricing",  label: "Pricing" },
+    { to: "/blog",     label: "Blog" },
     { to: "/partners", label: "Partners" },
     { to: "/compare",  label: "Compare" },
     { to: "/api-docs", label: "Developer API" },
@@ -59,7 +64,12 @@ function Nav({ currentPath }) {
             <Link
               key={l.to}
               href={l.to}
-              className={currentPath === l.to ? "active" : ""}
+              className={
+                currentPath === l.to
+                || (l.to === "/blog" && currentPath.startsWith("/blog"))
+                  ? "active"
+                  : ""
+              }
               onClick={() => setOpen(false)}
             >
               {l.label}
@@ -131,6 +141,7 @@ function Footer() {
               { label: "Documentation", to: "/api-docs" },
               { label: "API Reference", to: "/api-docs" },
               { label: "FAQ",           to: "/faq" },
+              { label: "Blog",          to: "/blog" },
               { label: "Sitemap",       to: "/site-map" },
               { label: "Partners",      to: "/partners" },
               { label: "Support",       to: "/contact" },

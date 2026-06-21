@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FiArrowRight, FiCheck, FiStar, FiAward, FiHelpCircle, FiZap, FiX } from "react-icons/fi";
+import { FiArrowRight, FiCheck, FiStar, FiHelpCircle, FiZap, FiX } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import { SignupLink } from "@/components/site/AppLinks";
 
@@ -102,6 +102,9 @@ function Plans({ onGoto }) {
               onClick={() => setDurId(d.id)}
             >
               {d.label}
+              {d.bestValue && (
+                <span className="ln-best-pill">BEST VALUE</span>
+              )}
               {d.discount > 0 && (
                 <span className="ln-save-pill">SAVE {Math.round(d.discount * 100)}%</span>
               )}
@@ -119,13 +122,10 @@ function Plans({ onGoto }) {
                 className={`ln-pub-price ${p.popular ? "popular" : ""}`}
               >
                 {p.popular && (
-                  <div className="ln-pub-badge popular">
-                    <FiStar /> MOST POPULAR
-                  </div>
-                )}
-                {duration?.bestValue && (
-                  <div className="ln-pub-badge best">
-                    <FiAward /> BEST VALUE
+                  <div className="ln-pub-price-badges">
+                    <div className="ln-pub-badge popular">
+                      <FiStar /> Most popular
+                    </div>
                   </div>
                 )}
                 <h3>{p.name}</h3>

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { GlobalStructuredData } from "@/components/seo/StructuredData";
 import "@/styles/marketing.css";
+import "@/styles/blog.css";
 import "./globals.css";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, THEME_COLOR } from "@/lib/marketing-seo";
 

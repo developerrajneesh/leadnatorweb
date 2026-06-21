@@ -10,7 +10,6 @@ import {
 } from "react-icons/fi";
 import { FaWhatsapp } from "react-icons/fa";
 import { SiMeta } from "react-icons/si";
-import SiteLinks from "@/components/site/SiteLinks";
 import MarketingArt from "./_sections/MarketingArt";
 import IntegrationsHub from "./_sections/IntegrationsHub";
 import AIShowcase from "./_sections/AIShowcase";
@@ -30,7 +29,6 @@ export default function HomePage({ onGoto }) {
       <HierarchyFlow />
       <IntegrationsHub />
       <Testimonials />
-      <SiteLinks />
       <CtaBanner onGoto={onGoto} />
     </>
   );

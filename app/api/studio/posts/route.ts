@@ -1,0 +1,33 @@
+import { NextResponse } from "next/server";
+import { requireSession } from "@/lib/blog/auth";
+import { createPost, listPosts } from "@/lib/blog/store";
+
+export async function GET() {
+  try {
+    await requireSession();
+    const posts = await listPosts();
+    return NextResponse.json(posts);
+  } catch {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const session = await requireSession();
+    const body = await req.json();
+    if (!body.title?.trim()) {
+      return NextResponse.json({ error: "Title is required" }, { status: 400 });
+    }
+    if (!body.content?.blocks) {
+      return NextResponse.json({ error: "Content is required" }, { status: 400 });
+    }
+    const post = await createPost(body, session.email);
+    return NextResponse.json(post, { status: 201 });
+  } catch (e) {
+    if (e instanceof Error && e.message === "Unauthorized") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    return NextResponse.json({ error: "Failed to create post" }, { status: 500 });
+  }
+}
