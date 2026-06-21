@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  FiArrowLeft, FiBarChart2, FiEdit3, FiExternalLink, FiEye, FiImage, FiPlus, FiTrash2,
+  FiArrowLeft, FiBarChart2, FiEdit3, FiExternalLink, FiEye, FiImage, FiPlus, FiTrash2, FiUsers,
 } from "react-icons/fi";
 import StudioShell from "@/components/studio/StudioShell";
 import { EXIT_SITE_LABEL, EXIT_SITE_URL } from "@/lib/blog/nav";
@@ -23,7 +23,7 @@ export default function StudioDashboard() {
   }, []);
 
   async function remove(id: string) {
-    if (!confirm("Delete this post permanently?")) return;
+    if (!confirm("Delete this post? You won't be able to get it back.")) return;
     await fetch(`/api/studio/posts/${id}`, { method: "DELETE" });
     setPosts((p) => p.filter((x) => x.id !== id));
   }
@@ -32,25 +32,28 @@ export default function StudioDashboard() {
   const drafts = posts.filter((p) => p.status === "draft").length;
 
   return (
-    <StudioShell title="Studio Dashboard">
+    <StudioShell title="Dashboard">
       <div className="studio-welcome">
         <div className="studio-welcome-copy">
           <span className="studio-welcome-badge">All in One CRM</span>
-          <h2>Website &amp; blog control panel</h2>
+          <h2>Welcome back!</h2>
           <p>
-            Publish vlogs, track real visitors, and see which channels — Instagram, Google,
-            WhatsApp or ads — actually bring people to your site.
+            Write and publish vlogs, see who's visiting your site, and catch every message
+            from your contact page — all from here.
           </p>
         </div>
         <div className="studio-welcome-actions">
           <Link href="/studio/traffic" className="ln-btn ln-btn-primary">
-            <FiBarChart2 /> Traffic
+            <FiBarChart2 /> See visitors
+          </Link>
+          <Link href="/studio/leads" className="ln-btn ln-btn-outline">
+            <FiUsers /> View leads
           </Link>
           <Link href="/studio/posts/new" className="ln-btn ln-btn-outline">
-            <FiPlus /> New post
+            <FiPlus /> Write a post
           </Link>
           <Link href="/blog" className="ln-btn ln-btn-outline">
-            <FiEye /> View blog
+            <FiEye /> Open blog
           </Link>
           <a href={EXIT_SITE_URL} className="ln-btn ln-btn-ghost studio-welcome-exit">
             <FiArrowLeft /> {EXIT_SITE_LABEL}
@@ -61,15 +64,15 @@ export default function StudioDashboard() {
       <Link href="/studio/traffic" className="studio-traffic-teaser">
         <span className="studio-traffic-teaser-icon"><FiBarChart2 aria-hidden /></span>
         <span className="studio-traffic-teaser-copy">
-          <strong>Traffic &amp; analytics</strong>
-          <span>Who visited, from which platform, how long they stayed, and top vlog posts</span>
+          <strong>Website visitors</strong>
+          <span>See who came to your site, where they found you, and what they read</span>
         </span>
         <span className="studio-traffic-teaser-arrow">→</span>
       </Link>
 
       <div className="studio-section-divider">
-        <h2>Blog posts</h2>
-        <p>Vlog articles — write, publish and manage your content library.</p>
+        <h2>Your blog posts</h2>
+        <p>Write, edit and publish vlog articles for your audience.</p>
       </div>
 
       <div className="studio-stats">
@@ -79,20 +82,20 @@ export default function StudioDashboard() {
       </div>
 
       <div className="studio-dash-head">
-        <p>All posts</p>
+        <p>Your articles</p>
         <Link href="/studio/posts/new" className="ln-btn ln-btn-primary ln-btn-sm">
           <FiPlus /> New post
         </Link>
       </div>
 
       {loading ? (
-        <p className="studio-loading">Loading posts…</p>
+        <p className="studio-loading">Loading your posts…</p>
       ) : posts.length === 0 ? (
         <div className="studio-empty">
-          <h2>No posts yet</h2>
-          <p>Create your first vlog post with Editor.js — text, images, embeds and more.</p>
+          <h2>Ready to write your first post?</h2>
+          <p>Share your ideas with the world — add text, images, embeds and more.</p>
           <Link href="/studio/posts/new" className="ln-btn ln-btn-primary ln-btn-lg">
-            <FiPlus /> Write first post
+            <FiPlus /> Write your first post
           </Link>
         </div>
       ) : (

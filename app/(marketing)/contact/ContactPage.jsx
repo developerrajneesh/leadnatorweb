@@ -129,12 +129,12 @@ function Form() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Could not send your message. Please try again.");
+        setError(data.error || "We couldn't send your message. Please try again in a moment.");
         return;
       }
       setSent(true);
     } catch {
-      setError("Could not send your message. Please try again.");
+      setError("Something went wrong on our end. Please try again.");
     } finally {
       setBusy(false);
     }
@@ -150,7 +150,7 @@ function Form() {
             sub="A real person reads every form submission and replies personally. Include as much detail as you like."
           />
           <ul className="ln-form-trust">
-            <li><FiCheck /> Average first reply: 17 minutes</li>
+            <li><FiCheck /> Average first reply: 5 minutes</li>
             <li><FiCheck /> Response guaranteed within 24 hours</li>
             <li><FiCheck /> No sales automation — real humans</li>
           </ul>
@@ -162,8 +162,8 @@ function Form() {
         {sent ? (
           <div className="ln-form-done">
             <div className="ln-form-done-ic"><FiCheck /></div>
-            <h3>Message received ✅</h3>
-            <p>Thanks {form.name || "!"} — we'll reply to <b>{form.email}</b> within a few hours.</p>
+            <h3>We got your message!</h3>
+            <p>Thanks {form.name || "friend"} — we'll be in touch at <b>{form.email}</b> very soon.</p>
             <button className="ln-btn ln-btn-primary ln-btn-lg" onClick={() => { setSent(false); setForm({ name: "", email: "", company: "", interest: "Sales", message: "" }); }}>
               Send another message
             </button>

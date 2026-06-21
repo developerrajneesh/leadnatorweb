@@ -20,8 +20,8 @@ export default function PlatformBarsChart({ rows, colorFor }: Props) {
   return (
     <div className="sa-viz sa-viz-bars">
       <div className="sa-viz-bars-head" aria-hidden>
-        <span>Source</span>
-        <span>Total vs unique</span>
+        <span>Where they came from</span>
+        <span>Views vs visitors</span>
       </div>
       <div className={`sa-viz-bars-scroll${expanded ? " expanded" : ""}`}>
         <ul className="sa-viz-bars-list">
@@ -33,7 +33,7 @@ export default function PlatformBarsChart({ rows, colorFor }: Props) {
               <li key={row.platform}>
                 <div className="sa-viz-bars-label">
                   <strong title={row.platform}>{truncateLabel(row.platform, 28)}</strong>
-                  <span>{row.views.toLocaleString()} total · {row.uniqueVisitors.toLocaleString()} unique</span>
+                  <span>{row.views.toLocaleString()} views · {row.uniqueVisitors.toLocaleString()} visitors</span>
                 </div>
                 <div className="sa-viz-bars-track" title={`${row.views} views, ${row.uniqueVisitors} unique`}>
                   <span
@@ -56,10 +56,10 @@ export default function PlatformBarsChart({ rows, colorFor }: Props) {
           className="sa-viz-expand"
           onClick={() => setExpanded((v) => !v)}
         >
-          {expanded ? "Show less" : `Show all ${rows.length} sources`}
+          {expanded ? "Show less" : `See all ${rows.length} sources`}
         </button>
       )}
-      <p className="sa-viz-bars-note">Light = total visits · Solid = unique people from that source</p>
+      <p className="sa-viz-bars-note">Light bar = total views · Dark bar = unique visitors</p>
     </div>
   );
 }

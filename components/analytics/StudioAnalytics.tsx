@@ -14,6 +14,7 @@ import {
 } from "react-icons/fi";
 import type { AnalyticsSummary, PageStat } from "@/lib/analytics/types";
 import { formatDuration } from "@/lib/analytics/format";
+import { pageKindLabel, resolvePageKind, resolvePageLabel } from "@/lib/analytics/page-labels";
 import TrafficAreaChart from "@/components/analytics/charts/TrafficAreaChart";
 import PlatformDonutChart from "@/components/analytics/charts/PlatformDonutChart";
 import PlatformBarsChart from "@/components/analytics/charts/PlatformBarsChart";
@@ -79,11 +80,11 @@ const METRICS: {
   accent: string;
   format?: "duration";
 }[] = [
-  { key: "totalViews", label: "Total page views", icon: FiEye, accent: "green" },
-  { key: "uniqueVisitors", label: "Unique people", icon: FiUsers, accent: "blue" },
-  { key: "viewsToday", label: "Visits today", icon: FiActivity, accent: "violet" },
-  { key: "totalDurationSec", label: "Time on site", icon: FiClock, accent: "amber", format: "duration" },
-  { key: "avgDurationSec", label: "Avg time per visit", icon: FiTrendingUp, accent: "teal", format: "duration" },
+  { key: "totalViews", label: "Page views", icon: FiEye, accent: "green" },
+  { key: "uniqueVisitors", label: "Unique visitors", icon: FiUsers, accent: "blue" },
+  { key: "viewsToday", label: "Today's visits", icon: FiActivity, accent: "violet" },
+  { key: "totalDurationSec", label: "Total reading time", icon: FiClock, accent: "amber", format: "duration" },
+  { key: "avgDurationSec", label: "Avg. time per visit", icon: FiTrendingUp, accent: "teal", format: "duration" },
 ];
 
 function metricValue(data: AnalyticsSummary, key: string, format?: string) {
@@ -97,13 +98,11 @@ function PageStatsTable({
   title,
   description,
   rows,
-  showTitle = true,
   icon: Icon,
 }: {
   title: string;
   description?: string;
   rows: PageStat[];
-  showTitle?: boolean;
   icon: typeof FiFileText;
 }) {
   return (
@@ -119,40 +118,44 @@ function PageStatsTable({
       </div>
 
       {rows.length === 0 ? (
-        <p className="sa-empty-inline">No visits in this period — share links or try a wider date range.</p>
+        <p className="sa-empty-inline">Nothing here for this time range yet — try sharing your links or pick a longer period.</p>
       ) : (
         <div className="sa-table-wrap">
-          <table className="sa-table">
+          <table className="sa-table sa-table-pages">
             <thead>
               <tr>
                 <th>#</th>
-                {showTitle ? <th>Page / article</th> : <th>Path</th>}
-                <th>Opens</th>
-                <th>Unique</th>
-                <th>Reading time</th>
-                <th>Avg stay</th>
+                <th>Page name</th>
+                <th>Views</th>
+                <th>Visitors</th>
+                <th>Time spent</th>
+                <th>Avg. stay</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((row, i) => (
-                <tr key={row.path}>
-                  <td className="sa-rank">{i + 1}</td>
-                  <td>
-                    <div className="sa-page-cell">
-                      {showTitle && row.title ? (
-                        <strong>{row.title}</strong>
-                      ) : (
-                        <strong>{row.path}</strong>
-                      )}
-                      <span>{row.path}</span>
-                    </div>
-                  </td>
-                  <td><span className="sa-num">{row.views.toLocaleString()}</span></td>
-                  <td><span className="sa-num">{row.uniqueVisitors.toLocaleString()}</span></td>
-                  <td><span className="sa-time">{formatDuration(row.totalDurationSec)}</span></td>
-                  <td><span className="sa-time">{formatDuration(row.avgDurationSec)}</span></td>
-                </tr>
-              ))}
+              {rows.map((row, i) => {
+                const name = row.title || resolvePageLabel(row.path);
+                const kind = resolvePageKind(row.path);
+                return (
+                  <tr key={row.path}>
+                    <td className="sa-rank">{i + 1}</td>
+                    <td>
+                      <div className="sa-page-name">
+                        <span className={`sa-page-kind sa-page-kind-${kind}`}>
+                          {pageKindLabel(kind)}
+                        </span>
+                        <span className="sa-page-name-text" title={name}>
+                          {name}
+                        </span>
+                      </div>
+                    </td>
+                    <td><span className="sa-num">{row.views.toLocaleString()}</span></td>
+                    <td><span className="sa-num">{row.uniqueVisitors.toLocaleString()}</span></td>
+                    <td><span className="sa-time">{formatDuration(row.totalDurationSec)}</span></td>
+                    <td><span className="sa-time">{formatDuration(row.avgDurationSec)}</span></td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -184,22 +187,22 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
         <div className="sa-hero-inner">
           <div className="sa-hero-copy">
             <span className="sa-hero-badge">
-              <FiGlobe aria-hidden /> Real-time insights
+              <FiGlobe aria-hidden /> Live updates
             </span>
-            <h2>Website traffic</h2>
+            <h2>Your visitors</h2>
             <p>
-              Understand your audience — which pages they open, how long they read, and whether
-              they came from Instagram, Google, WhatsApp, email or a direct visit.
+              See who's coming to your site, how long they stay, and whether they found you
+              on Instagram, Google, WhatsApp, or somewhere else.
             </p>
           </div>
           <ul className="sa-hero-points">
-            <li><FiLayers aria-hidden /> Auto-detects source from campaign links &amp; referrers</li>
-            <li><FiClock aria-hidden /> Measures time on each page and full visit</li>
-            <li><FiFileText aria-hidden /> Breaks down performance per vlog &amp; landing page</li>
+            <li><FiLayers aria-hidden /> We figure out where visitors came from — automatically</li>
+            <li><FiClock aria-hidden /> Track how long people spend on each page</li>
+            <li><FiFileText aria-hidden /> See which vlogs and pages perform best</li>
           </ul>
           <div className="sa-hero-actions">
-            <div className="sa-period" role="group" aria-label="Date range">
-              <span className="sa-period-label">Period</span>
+            <div className="sa-period" role="group" aria-label="Time range">
+              <span className="sa-period-label">Show data for</span>
               <div className="sa-period-options">
                 {PERIOD_OPTIONS.map(({ value, label }) => (
                   <button
@@ -216,7 +219,7 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
             </div>
             {!fullPage && (
               <Link href="/studio/traffic" className="sa-hero-link">
-                Full report <FiTrendingUp aria-hidden />
+                See full report <FiTrendingUp aria-hidden />
               </Link>
             )}
           </div>
@@ -226,10 +229,10 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
       {loading ? (
         <div className="sa-loading">
           <span className="sa-loading-dot" />
-          Loading analytics…
+          Loading your stats…
         </div>
       ) : !data ? (
-        <div className="sa-empty">Could not load analytics. Check your connection and try again.</div>
+        <div className="sa-empty">We couldn't load your stats right now. Check your connection and try again.</div>
       ) : (
         <>
           <div className="sa-metrics">
@@ -253,7 +256,7 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
               </span>
               <div className="sa-metric-body">
                 <strong>{topSource?.platform || "—"}</strong>
-                <span>Top traffic source {topSource ? `· ${topSource.pct}% of visits` : ""}</span>
+                <span>Top source {topSource ? `· ${topSource.pct}% of visits` : ""}</span>
               </div>
             </article>
           </div>
@@ -261,11 +264,10 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
           {data.totalViews === 0 ? (
             <div className="sa-empty sa-empty-guide">
               <FiActivity aria-hidden />
-              <h3>No traffic recorded yet</h3>
+              <h3>No visitors yet</h3>
               <p>
-                Share your site or vlog links on Instagram, WhatsApp or ads — add{" "}
-                <code>?utm_source=instagram</code> to links for clearer source tracking.
-                Browse a few pages, then refresh here. Time is saved when visitors leave a page.
+                Share your site on Instagram, WhatsApp or anywhere else — then come back here to see the results.
+                Open a few pages yourself to test it out, then hit refresh.
               </p>
             </div>
           ) : (
@@ -277,7 +279,7 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
                   </div>
                   <div>
                     <h3>Views over time</h3>
-                    <p>Daily trend — spot spikes from campaigns, new vlogs or seasonal traffic</p>
+                    <p>Watch your daily visits grow — great for spotting busy days and new campaigns</p>
                   </div>
                 </div>
                 <TrafficAreaChart data={daySeries} rangeDays={days} />
@@ -290,8 +292,8 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
                       <FiLayers aria-hidden />
                     </div>
                     <div>
-                      <h3>Traffic share</h3>
-                      <p>Which channel wins — social, search, ads, direct or referral</p>
+                      <h3>Where visitors come from</h3>
+                      <p>Instagram, Google, WhatsApp, direct visits — see what brings people in</p>
                     </div>
                   </div>
                   <PlatformDonutChart rows={data.byPlatform} colorFor={platformColor} />
@@ -303,8 +305,8 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
                       <FiUsers aria-hidden />
                     </div>
                     <div>
-                      <h3>Total vs unique</h3>
-                      <p>Repeat visits vs new people — see engagement depth per source</p>
+                      <h3>New vs returning</h3>
+                      <p>See who's coming back and who's visiting for the first time</p>
                     </div>
                   </div>
                   <PlatformBarsChart rows={data.byPlatform} colorFor={platformColor} />
@@ -318,12 +320,12 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
           {data.totalViews > 0 && (
             <section className="sa-section" id="blog-analytics">
               <div className="sa-section-head">
-                <h2>Vlog / blog performance</h2>
-                <p>Which articles get the most reads, unique visitors and reading time.</p>
+                <h2>How your articles are doing</h2>
+                <p>Find out which vlogs people love reading — and how long they stick around.</p>
               </div>
               <PageStatsTable
-                title="All blog articles"
-                description="Compare every post — opens, unique readers, and how long people stay on the page"
+                title="All your articles"
+                description="Every blog post ranked by views, readers and reading time"
                 rows={data.blogPosts}
                 icon={FiFileText}
               />
@@ -333,14 +335,13 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
           {data.allPages.length > 0 && (
             <section className="sa-section" id="page-analytics">
               <div className="sa-section-head">
-                <h2>All pages</h2>
-                <p>Home, pricing, features, blog &amp; contact — full site performance in one place.</p>
+                <h2>Every page on your site</h2>
+                <p>Home, pricing, blog, contact — see how each page is performing.</p>
               </div>
               <PageStatsTable
-                title="Site-wide page stats"
-                description="Every tracked URL ranked by views, unique visitors and time on page"
+                title="All pages"
+                description="Your full site at a glance — views, visitors and time spent"
                 rows={data.allPages}
-                showTitle={false}
                 icon={FiGlobe}
               />
             </section>

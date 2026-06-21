@@ -5,14 +5,60 @@ import { useMemo, useState } from "react";
 type DayPoint = { date: string; count: number };
 
 const W = 640;
-const H = 240;
-const PAD = { top: 22, right: 16, bottom: 40, left: 52 };
+const H = 248;
+const PAD = { top: 22, right: 16, bottom: 48, left: 52 };
+const MIN_LABEL_GAP = 68;
 
-function formatLabel(iso: string) {
-  return new Date(iso + "T12:00:00").toLocaleDateString("en-IN", {
+function formatLabel(iso: string, compact = false) {
+  const d = new Date(iso + "T12:00:00");
+  if (compact) {
+    return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  }
+  return d.toLocaleDateString("en-IN", {
     month: "short",
     day: "numeric",
   });
+}
+
+/** Pick x-axis indices with enough pixel gap — avoids overlapping date labels. */
+function pickXTickIndices(count: number, innerW: number): number[] {
+  if (count <= 0) return [];
+  if (count === 1) return [0];
+
+  const maxLabels = Math.max(
+    2,
+    Math.min(
+      count,
+      Math.floor(innerW / MIN_LABEL_GAP),
+      count <= 8 ? count : count <= 14 ? 6 : 8,
+    ),
+  );
+  if (count <= maxLabels) {
+    return Array.from({ length: count }, (_, i) => i);
+  }
+
+  const indices: number[] = [0];
+  for (let k = 1; k < maxLabels - 1; k++) {
+    indices.push(Math.round((k / (maxLabels - 1)) * (count - 1)));
+  }
+
+  const last = count - 1;
+  const prev = indices[indices.length - 1];
+  const gapPx = ((last - prev) / (count - 1)) * innerW;
+  if (gapPx < MIN_LABEL_GAP && indices.length > 1) {
+    indices.pop();
+  }
+  if (indices[indices.length - 1] !== last) {
+    indices.push(last);
+  }
+
+  return [...new Set(indices)].sort((a, b) => a - b);
+}
+
+function xLabelAnchor(i: number, count: number): "start" | "middle" | "end" {
+  if (i === 0) return "start";
+  if (i === count - 1) return "end";
+  return "middle";
 }
 
 function niceMax(value: number) {
@@ -83,12 +129,14 @@ export default function TrafficAreaChart({
     }));
 
     const hitW = Math.max(8, innerW / Math.max(count, 1));
+    const xTickIndices = pickXTickIndices(count, innerW);
+    const compactLabels = count > 12 || xTickIndices.length > 6;
 
-    return { points, line, area, yTicks, innerH, maxY, hitW };
+    return { points, line, area, yTicks, innerH, maxY, hitW, xTickIndices, compactLabels };
   }, [series]);
 
   if (!chart || !series.length) {
-    return <p className="sa-chart-empty">No daily data yet.</p>;
+    return <p className="sa-chart-empty">No daily data to show yet — check back once you have visitors.</p>;
   }
 
   const active = hover !== null ? chart.points[hover] : null;
@@ -101,7 +149,7 @@ export default function TrafficAreaChart({
       <div className="sa-viz-summary">
         <div>
           <strong>{total.toLocaleString()}</strong>
-          <span>total visits in this period · {activeDays} day{activeDays === 1 ? "" : "s"} with traffic</span>
+          <span>views over {activeDays} active day{activeDays === 1 ? "" : "s"}</span>
         </div>
         {active && (
           <div className="sa-viz-tooltip-inline">
@@ -191,22 +239,24 @@ export default function TrafficAreaChart({
           />
         ))}
 
-        {chart.points.map((p, i) => {
-          const step = Math.ceil(series.length / 8);
-          const show =
-            series.length <= 10 ||
-            i % step === 0 ||
-            i === series.length - 1;
-          if (!show) return null;
+        {chart.xTickIndices.map((i) => {
+          const p = chart.points[i];
+          const anchor = xLabelAnchor(i, series.length);
+          const x =
+            anchor === "start"
+              ? Math.max(PAD.left, p.x)
+              : anchor === "end"
+                ? Math.min(W - PAD.right, p.x)
+                : p.x;
           return (
             <text
               key={`${p.date}-x`}
-              x={p.x}
-              y={H - 12}
+              x={x}
+              y={H - 14}
               className="sa-viz-axis-x"
-              textAnchor="middle"
+              textAnchor={anchor}
             >
-              {formatLabel(p.date)}
+              {formatLabel(p.date, chart.compactLabels)}
             </text>
           );
         })}

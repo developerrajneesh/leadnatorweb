@@ -19,8 +19,8 @@ export default function PlatformSourcesTable({ rows, colorFor }: Props) {
           <FiLayers aria-hidden />
         </div>
         <div>
-          <h3>All traffic sources ({rows.length})</h3>
-          <p>Every channel that sent visitors — scroll for the full ranked list</p>
+          <h3>All visitor sources ({rows.length})</h3>
+          <p>Every place your visitors came from — scroll to see the full list</p>
         </div>
       </div>
       <div className="sa-table-wrap sa-table-wrap-scroll">
@@ -29,8 +29,8 @@ export default function PlatformSourcesTable({ rows, colorFor }: Props) {
             <tr>
               <th>#</th>
               <th>Source</th>
-              <th>Total</th>
-              <th>Unique</th>
+              <th>Views</th>
+              <th>Visitors</th>
               <th>Share</th>
             </tr>
           </thead>

@@ -4,6 +4,7 @@ import { listPosts } from "@/lib/blog/store";
 import { referrerLabel, resolveTrafficSource } from "./referrer";
 import { extractBlogSlug } from "./format";
 import type { AnalyticsSummary, PageStat, PageViewRecord } from "./types";
+import { resolvePageLabel } from "./page-labels";
 
 const COLLECTION = "site_page_views";
 
@@ -232,6 +233,10 @@ export async function getAnalyticsSummary(rangeDays = 30): Promise<AnalyticsSumm
   const pageMap = new Map(pageRows.map((r) => [r._id, toPageStat(r)]));
 
   const published = cmsPosts.filter((p) => p.status === "published");
+  const cmsTitleByPath = new Map(
+    published.map((post) => [`/blog/${post.slug}`, post.title] as const),
+  );
+
   const blogPosts: PageStat[] = published
     .map((post) => {
       const path = `/blog/${post.slug}`;
@@ -241,13 +246,17 @@ export async function getAnalyticsSummary(rangeDays = 30): Promise<AnalyticsSumm
 
   const blogIndex = pageMap.get("/blog");
   if (blogIndex) {
-    blogPosts.unshift({ ...blogIndex, title: "Blog index", slug: undefined });
+    blogPosts.unshift({ ...blogIndex, title: "Blog", slug: undefined });
   } else {
-    blogPosts.unshift(emptyStat("/blog", "Blog index"));
+    blogPosts.unshift(emptyStat("/blog", "Blog"));
   }
 
   const allPages: PageStat[] = pageRows
-    .map((r) => toPageStat(r))
+    .map((r) => {
+      const stat = toPageStat(r);
+      stat.title = resolvePageLabel(r._id, cmsTitleByPath);
+      return stat;
+    })
     .sort((a, b) => b.views - a.views);
 
   const dur = durationAgg[0];

@@ -26,11 +26,11 @@ function LoginForm() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Login failed");
+      if (!res.ok) throw new Error(data.error || "That didn't work — please check your email and password.");
       router.push(next.startsWith("/studio") ? next : "/studio/dashboard");
       router.refresh();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Login failed");
+      setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -40,8 +40,8 @@ function LoginForm() {
     <div className="studio-gate">
       <div className="studio-gate-card studio-login-card">
         <div className="studio-gate-badge"><FiLock /> Sign in</div>
-        <h1>Welcome to Vlog Studio</h1>
-        <p>Sign in to write and publish blog posts — this area is separate from the main website.</p>
+        <h1>Welcome to Leadnator</h1>
+        <p>Sign in to manage your blog, track visitors, and view leads from your contact page.</p>
 
         {error && <div className="studio-error">{error}</div>}
 
@@ -70,9 +70,9 @@ function LoginForm() {
         </form>
 
         <p className="studio-gate-foot">
-          <Link href="/blog">View public blog</Link>
+          <Link href="/blog">Browse the blog</Link>
           {" · "}
-          <Link href="/">Back to main site</Link>
+          <Link href="/">Go to main website</Link>
         </p>
       </div>
     </div>

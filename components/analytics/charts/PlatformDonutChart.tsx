@@ -104,7 +104,7 @@ export default function PlatformDonutChart({ rows, colorFor }: Props) {
         </ul>
         {hiddenCount > 0 && (
           <p className="sa-viz-legend-note">
-            Top {DONUT_TOP_N} shown in chart · {hiddenCount} more listed below
+            Top {DONUT_TOP_N} in the chart · {hiddenCount} more in the list below
           </p>
         )}
       </div>

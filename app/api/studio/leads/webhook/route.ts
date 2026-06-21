@@ -28,7 +28,7 @@ export async function PUT(req: Request) {
     const url = typeof body.url === "string" ? body.url.trim() : "";
 
     if (url && !isValidWebhookUrl(url)) {
-      return NextResponse.json({ error: "Enter a valid http or https URL." }, { status: 400 });
+      return NextResponse.json({ error: "Please enter a valid link starting with http:// or https://" }, { status: 400 });
     }
 
     const saved = await setLeadsWebhookUrl(url);

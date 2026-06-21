@@ -55,6 +55,12 @@ export async function listContactLeads(limit = 200): Promise<ContactLead[]> {
   return rows as ContactLead[];
 }
 
+export async function deleteContactLead(id: string): Promise<boolean> {
+  const col = await leadsCollection();
+  const result = await col.deleteOne({ id });
+  return result.deletedCount === 1;
+}
+
 export async function getLeadsWebhookUrl(): Promise<string | null> {
   const col = await settingsCollection();
   const row = await col.findOne({ key: WEBHOOK_KEY }, { projection: { _id: 0, value: 1 } });

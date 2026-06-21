@@ -17,12 +17,12 @@ const ICONS = {
 };
 
 function headerSubtitle(pathname: string | null): string {
-  if (!pathname) return "Create, publish & track your content";
-  if (pathname === "/studio/dashboard") return "Manage vlog posts and jump to analytics";
-  if (pathname.startsWith("/studio/traffic")) return "Know who visits, from where, and how long they stay";
-  if (pathname.startsWith("/studio/leads")) return "Contact form submissions — view and forward to webhook";
-  if (pathname.includes("/posts/new")) return "Write your next article with the editor";
-  if (pathname.includes("/edit")) return "Update content, cover & publish settings";
+  if (!pathname) return "Create content, track visitors, and manage leads — all in one place";
+  if (pathname === "/studio/dashboard") return "Your home for blog posts, traffic and incoming leads";
+  if (pathname.startsWith("/studio/traffic")) return "See who's visiting your site and where they come from";
+  if (pathname.startsWith("/studio/leads")) return "Messages from your contact page, ready when you are";
+  if (pathname.includes("/posts/new")) return "Start writing — your next article begins here";
+  if (pathname.includes("/edit")) return "Update your article, cover image and publish settings";
   return "Leadnator — All in One CRM";
 }
 
@@ -113,10 +113,10 @@ export default function StudioShell({
           <p className="studio-sidebar-label">Analytics</p>
           <nav className="studio-nav studio-nav-analytics">
             <Link href="/studio/traffic" className={isActive("/studio/traffic") ? "active" : ""}>
-              <FiBarChart2 aria-hidden /> Visitors &amp; sources
+              <FiBarChart2 aria-hidden /> Website visitors
             </Link>
             <Link href="/studio/leads" className={isActive("/studio/leads") ? "active" : ""}>
-              <FiUsers aria-hidden /> Leads
+              <FiUsers aria-hidden /> Your leads
             </Link>
           </nav>
 
@@ -140,7 +140,7 @@ export default function StudioShell({
 
           {userEmail ? (
             <button type="button" onClick={logout} className="studio-logout" disabled={loggingOut}>
-              <FiLogOut aria-hidden /> {loggingOut ? "Signing out…" : "Logout"}
+              <FiLogOut aria-hidden /> {loggingOut ? "Signing out…" : "Sign out"}
             </button>
           ) : (
             <Link href="/studio/login" className="studio-sidebar-login">
