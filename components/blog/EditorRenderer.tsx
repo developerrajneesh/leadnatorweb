@@ -1,13 +1,19 @@
 import { shouldUnoptimizeImage } from "@/lib/blog/media";
-import { cleanEditorHtml } from "@/lib/blog/html";
-import type { OutputBlockData, OutputData } from "@editorjs/editorjs";
+import {
+  type BlogPostContent,
+  isEditorJsContent,
+  parseInlineSignupCta,
+  sanitizeRenderedHtml,
+} from "@/lib/blog/content";
+import type { OutputBlockData } from "@editorjs/editorjs";
 import Image from "next/image";
+import BlogInlineCta from "@/components/blog/BlogInlineCta";
 
 function html(value: string) {
-  return { dangerouslySetInnerHTML: { __html: cleanEditorHtml(value) } };
+  return { dangerouslySetInnerHTML: { __html: sanitizeRenderedHtml(value) } };
 }
 
-function renderBlock(block: OutputBlockData, i: number) {
+function renderLegacyBlock(block: OutputBlockData, i: number) {
   const { type, data } = block;
 
   switch (type) {
@@ -16,8 +22,14 @@ function renderBlock(block: OutputBlockData, i: number) {
       if (data.level === 4) return <h4 key={i} {...html(data.text)} />;
       return <h2 key={i} {...html(data.text)} />;
 
-    case "paragraph":
-      return <p key={i} {...html(data.text)} />;
+    case "paragraph": {
+      const text = String(data.text ?? "");
+      const cta = parseInlineSignupCta(text);
+      if (cta) {
+        return <BlogInlineCta key={i} message={cta.message} href={cta.href} />;
+      }
+      return <p key={i} {...html(text)} />;
+    }
 
     case "list": {
       const Tag = data.style === "ordered" ? "ol" : "ul";
@@ -108,13 +120,26 @@ function renderBlock(block: OutputBlockData, i: number) {
 }
 
 type Props = {
-  data: OutputData;
+  data: BlogPostContent;
   className?: string;
 };
 
 export default function EditorRenderer({ data, className = "blog-prose" }: Props) {
-  if (!data?.blocks?.length) {
+  if (typeof data === "string") {
+    if (!data.replace(/<[^>]+>/g, "").trim()) {
+      return <p className="blog-empty">No content yet.</p>;
+    }
+    return (
+      <div
+        className={`${className} blog-prose-html`}
+        dangerouslySetInnerHTML={{ __html: sanitizeRenderedHtml(data) }}
+      />
+    );
+  }
+
+  if (!isEditorJsContent(data) || !data.blocks?.length) {
     return <p className="blog-empty">No content yet.</p>;
   }
-  return <div className={className}>{data.blocks.map(renderBlock)}</div>;
+
+  return <div className={className}>{data.blocks.map(renderLegacyBlock)}</div>;
 }

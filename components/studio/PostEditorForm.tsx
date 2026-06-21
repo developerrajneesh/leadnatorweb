@@ -17,18 +17,16 @@ import {
   FiUpload,
   FiX,
 } from "react-icons/fi";
-import type { OutputData } from "@editorjs/editorjs";
 import type { BlogPost, PostStatus } from "@/lib/blog/types";
+import { contentHtmlForEditor, hasPostContent } from "@/lib/blog/content";
 import { slugify } from "@/lib/blog/slug";
 
-const EditorJs = dynamic(() => import("@/components/blog/EditorJs"), {
+const BlogSunEditor = dynamic(() => import("@/components/blog/SunEditor"), {
   ssr: false,
   loading: () => (
-    <div className="blog-editor-wrap">
-      <div className="studio-editor-loading">
-        <span className="studio-editor-loading-dot" />
-        Loading editor…
-      </div>
+    <div className="blog-suneditor-wrap blog-suneditor-loading">
+      <span className="studio-editor-loading-dot" />
+      Loading editor…
     </div>
   ),
 });
@@ -46,18 +44,19 @@ export default function PostEditorForm({ post, mode }: Props) {
   const [coverImage, setCoverImage] = useState(post?.coverImage ?? "");
   const [tags, setTags] = useState(post?.tags?.join(", ") ?? "");
   const [status, setStatus] = useState<PostStatus>(post?.status ?? "draft");
-  const [content, setContent] = useState<OutputData | undefined>(post?.content);
+  const [content, setContent] = useState(() => contentHtmlForEditor(post?.content));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [slugTouched, setSlugTouched] = useState(!!post?.slug);
+  const editorKey = post?.id ?? "new";
 
   const onTitleChange = (v: string) => {
     setTitle(v);
     if (!slugTouched) setSlug(slugify(v));
   };
 
-  const onContentChange = useCallback((data: OutputData) => {
-    setContent(data);
+  const onContentChange = useCallback((html: string) => {
+    setContent(html);
   }, []);
 
   async function uploadCover(e: React.ChangeEvent<HTMLInputElement>) {
@@ -77,7 +76,7 @@ export default function PostEditorForm({ post, mode }: Props) {
       setError("Title is required");
       return;
     }
-    if (!content?.blocks?.length) {
+    if (!hasPostContent(content)) {
       setError("Add some content in the editor");
       return;
     }
@@ -179,10 +178,14 @@ export default function PostEditorForm({ post, mode }: Props) {
           <section className="se-card se-card-editor">
             <div className="se-card-head">
               <h2>Content</h2>
-              <p>Type <kbd>/</kbd> for blocks — headings, lists, images, embeds</p>
+              <p>Rich text editor — headings, images, tables, links, video embeds and more</p>
             </div>
             <div className="se-editor-wrap">
-              <EditorJs initialData={post?.content} onChange={onContentChange} />
+              <BlogSunEditor
+                key={editorKey}
+                initialHtml={contentHtmlForEditor(post?.content)}
+                onChange={onContentChange}
+              />
             </div>
           </section>
         </main>

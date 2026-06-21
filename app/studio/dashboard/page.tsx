@@ -93,7 +93,7 @@ export default function StudioDashboard() {
       ) : posts.length === 0 ? (
         <div className="studio-empty">
           <h2>Ready to write your first post?</h2>
-          <p>Share your ideas with the world — add text, images, embeds and more.</p>
+          <p>Share your ideas with the world — add text, images, tables, video and more.</p>
           <Link href="/studio/posts/new" className="ln-btn ln-btn-primary ln-btn-lg">
             <FiPlus /> Write your first post
           </Link>

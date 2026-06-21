@@ -1,4 +1,4 @@
-import type { OutputData } from "@editorjs/editorjs";
+import type { BlogPostContent } from "./content";
 
 export type PostStatus = "draft" | "published";
 
@@ -8,7 +8,7 @@ export type BlogPost = {
   title: string;
   excerpt: string;
   coverImage?: string;
-  content: OutputData;
+  content: BlogPostContent;
   status: PostStatus;
   author: string;
   tags: string[];
@@ -22,7 +22,7 @@ export type BlogPostInput = {
   slug?: string;
   excerpt?: string;
   coverImage?: string;
-  content: OutputData;
+  content: BlogPostContent;
   status?: PostStatus;
   tags?: string[];
 };

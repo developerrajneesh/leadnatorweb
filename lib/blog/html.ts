@@ -1,4 +1,4 @@
-/** Light cleanup for Editor.js HTML before render */
+/** Light cleanup for rich HTML before render */
 export function cleanEditorHtml(html: string): string {
   let out = html
     .replace(/^(?:\s|&nbsp;)+|(?:\s|&nbsp;)+$/gi, "")
