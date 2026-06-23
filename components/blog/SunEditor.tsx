@@ -1,9 +1,13 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { forwardRef, useImperativeHandle, useMemo, useRef } from "react";
 import SunEditor from "suneditor-react";
 import type SunEditorCore from "suneditor/src/lib/core";
 import "suneditor/dist/css/suneditor.min.css";
+
+export type BlogSunEditorHandle = {
+  getHtml: () => string;
+};
 
 type Props = {
   initialHtml?: string;
@@ -26,8 +30,15 @@ const FULL_BUTTON_LIST = [
   ["preview", "print"],
 ];
 
-export default function BlogSunEditor({ initialHtml = "", onChange, placeholder }: Props) {
+const BlogSunEditor = forwardRef<BlogSunEditorHandle, Props>(function BlogSunEditor(
+  { initialHtml = "", onChange, placeholder },
+  ref,
+) {
   const editorRef = useRef<SunEditorCore | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    getHtml: () => editorRef.current?.getContents(true) ?? "",
+  }));
 
   const options = useMemo(
     () => ({
@@ -114,4 +125,6 @@ export default function BlogSunEditor({ initialHtml = "", onChange, placeholder 
       />
     </div>
   );
-}
+});
+
+export default BlogSunEditor;

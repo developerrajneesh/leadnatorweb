@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  FiArrowLeft, FiBarChart2, FiEdit3, FiExternalLink, FiEye, FiGrid, FiList, FiLogIn, FiLogOut, FiPlus, FiUsers,
+  FiArrowLeft, FiBarChart2, FiEdit3, FiExternalLink, FiEye, FiGrid, FiList, FiLogIn, FiLogOut, FiPlus, FiUser, FiUsers,
 } from "react-icons/fi";
 import { EXIT_SITE_LABEL, EXIT_SITE_URL, STUDIO_NAV } from "@/lib/blog/nav";
 
@@ -21,6 +21,7 @@ function headerSubtitle(pathname: string | null): string {
   if (pathname === "/studio/dashboard") return "Your home for blog posts, traffic and incoming leads";
   if (pathname.startsWith("/studio/traffic")) return "See who's visiting your site and where they come from";
   if (pathname.startsWith("/studio/leads")) return "Messages from your contact page, ready when you are";
+  if (pathname.startsWith("/studio/profile")) return "Your photo and name on every blog post";
   if (pathname.includes("/posts/new")) return "Start writing — your next article begins here";
   if (pathname.includes("/edit")) return "Update your article, cover image and publish settings";
   return "Leadnator — All in One CRM";
@@ -64,6 +65,7 @@ export default function StudioShell({
     if (href === "/studio/dashboard") return pathname === href;
     if (href === "/studio/traffic") return pathname === href || pathname?.startsWith("/studio/traffic");
     if (href === "/studio/leads") return pathname === href || pathname?.startsWith("/studio/leads");
+    if (href === "/studio/profile") return pathname === href || pathname?.startsWith("/studio/profile");
     if (href === "/studio/posts/new") return pathname?.includes("/posts/new");
     if (href === "/blog") return pathname === "/blog";
     if (href === "/blog#posts") return pathname?.startsWith("/blog/");
@@ -120,6 +122,13 @@ export default function StudioShell({
             </Link>
           </nav>
 
+          <p className="studio-sidebar-label">Account</p>
+          <nav className="studio-nav studio-nav-secondary">
+            <Link href="/studio/profile" className={isActive("/studio/profile") ? "active" : ""}>
+              <FiUser aria-hidden /> Author profile
+            </Link>
+          </nav>
+
           <p className="studio-sidebar-label">Public</p>
           <nav className="studio-nav studio-nav-secondary">
             <Link href="/blog" target="_blank" rel="noopener noreferrer">
@@ -130,12 +139,12 @@ export default function StudioShell({
 
         <div className="studio-sidebar-foot">
           {userEmail ? (
-            <div className="studio-sidebar-user" title={userEmail}>
+            <Link href="/studio/profile" className="studio-sidebar-user" title="Edit author profile">
               <span className="studio-sidebar-avatar" aria-hidden>
                 {userEmail.charAt(0).toUpperCase()}
               </span>
               <span className="studio-sidebar-user-email">{userEmail}</span>
-            </div>
+            </Link>
           ) : null}
 
           {userEmail ? (

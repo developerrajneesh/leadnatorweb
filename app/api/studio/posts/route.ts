@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireSession } from "@/lib/blog/auth";
+import { hasPostContent } from "@/lib/blog/content";
 import { createPost, listPosts } from "@/lib/blog/store";
 
 export async function GET() {
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
     if (!body.title?.trim()) {
       return NextResponse.json({ error: "Title is required" }, { status: 400 });
     }
-    if (!body.content?.blocks) {
+    if (!hasPostContent(body.content)) {
       return NextResponse.json({ error: "Content is required" }, { status: 400 });
     }
     const post = await createPost(body, session.email);

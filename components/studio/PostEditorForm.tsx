@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,6 +20,8 @@ import {
 import type { BlogPost, PostStatus } from "@/lib/blog/types";
 import { contentHtmlForEditor, hasPostContent } from "@/lib/blog/content";
 import { slugify } from "@/lib/blog/slug";
+
+import type { BlogSunEditorHandle } from "@/components/blog/SunEditor";
 
 const BlogSunEditor = dynamic(() => import("@/components/blog/SunEditor"), {
   ssr: false,
@@ -49,6 +51,7 @@ export default function PostEditorForm({ post, mode }: Props) {
   const [error, setError] = useState("");
   const [slugTouched, setSlugTouched] = useState(!!post?.slug);
   const editorKey = post?.id ?? "new";
+  const editorRef = useRef<BlogSunEditorHandle>(null);
 
   const onTitleChange = (v: string) => {
     setTitle(v);
@@ -76,7 +79,8 @@ export default function PostEditorForm({ post, mode }: Props) {
       setError("Title is required");
       return;
     }
-    if (!hasPostContent(content)) {
+    const latestContent = editorRef.current?.getHtml() || content;
+    if (!hasPostContent(latestContent)) {
       setError("Add some content in the editor");
       return;
     }
@@ -87,7 +91,7 @@ export default function PostEditorForm({ post, mode }: Props) {
       slug: slug.trim() || slugify(title),
       excerpt: excerpt.trim(),
       coverImage: coverImage || undefined,
-      content,
+      content: latestContent,
       status: nextStatus ?? status,
       tags: tags
         .split(",")
@@ -182,6 +186,7 @@ export default function PostEditorForm({ post, mode }: Props) {
             </div>
             <div className="se-editor-wrap">
               <BlogSunEditor
+                ref={editorRef}
                 key={editorKey}
                 initialHtml={contentHtmlForEditor(post?.content)}
                 onChange={onContentChange}

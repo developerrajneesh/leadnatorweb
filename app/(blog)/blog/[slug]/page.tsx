@@ -3,7 +3,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { FiArrowLeft, FiArrowRight, FiCalendar, FiCheck, FiClock, FiPhone } from "react-icons/fi";
 import EditorRenderer from "@/components/blog/EditorRenderer";
+import AuthorAvatar from "@/components/blog/AuthorAvatar";
 import { PageStructuredData } from "@/components/seo/StructuredData";
+import { getBlogAuthorProfile } from "@/lib/blog/author-profile";
 import { getPostBySlug, getAllSlugs, getRelatedPosts } from "@/lib/blog/store";
 import { resolvePostCoverImage } from "@/lib/blog/images";
 import { shouldUnoptimizeImage } from "@/lib/blog/media";
@@ -56,22 +58,6 @@ function formatDate(iso: string) {
   });
 }
 
-function authorProfile(email: string) {
-  const local = email.split("@")[0] || "Leadnator";
-  if (/^admin$/i.test(local) || email.endsWith("@leadnator.com")) {
-    return { name: "Leadnator Team", initials: "LN", role: "Content & Growth" };
-  }
-  const name = local
-    .split(/[._-]/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
-  const parts = name.split(" ").filter(Boolean);
-  const initials =
-    parts.length >= 2 ? `${parts[0][0]}${parts[1][0]}`.toUpperCase() : name.slice(0, 2).toUpperCase();
-  return { name, initials, role: "Leadnator Team" };
-}
-
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
@@ -81,7 +67,7 @@ export default async function BlogPostPage({ params }: Props) {
   const date = post.publishedAt || post.createdAt;
   const readMinutes = estimateReadMinutes(post.content);
   const related = await getRelatedPosts(post.id, post.tags, 3);
-  const author = authorProfile(post.author);
+  const author = await getBlogAuthorProfile();
   const primaryTag = post.tags[0];
   const showCover = Boolean(coverImage && post.coverImage);
 
@@ -121,9 +107,9 @@ export default async function BlogPostPage({ params }: Props) {
 
                 <div className="blog-vlog-byline">
                   <div className="blog-vlog-author">
-                    <span className="blog-vlog-avatar" aria-hidden>{author.initials}</span>
+                    <AuthorAvatar author={author} size="md" />
                     <div>
-                      <strong>{author.name}</strong>
+                      <strong>{author.displayName}</strong>
                       <span>{author.role}</span>
                     </div>
                   </div>
@@ -139,16 +125,11 @@ export default async function BlogPostPage({ params }: Props) {
               <EditorRenderer data={post.content} className="blog-prose blog-vlog-prose" />
 
               <aside className="blog-vlog-written-by">
-                <span className="blog-vlog-avatar blog-vlog-avatar-lg" aria-hidden>
-                  {author.initials}
-                </span>
+                <AuthorAvatar author={author} size="lg" />
                 <div>
-                  <h2>Written by {author.name}</h2>
+                  <h2>Written by {author.displayName}</h2>
                   <p className="blog-vlog-written-role">{author.role}</p>
-                  <p className="blog-vlog-written-bio">
-                    {author.name} writes about WhatsApp marketing, CRM workflows, and growth
-                    strategies for businesses using {SITE_NAME}.
-                  </p>
+                  <p className="blog-vlog-written-bio">{author.bio}</p>
                 </div>
               </aside>
             </div>
