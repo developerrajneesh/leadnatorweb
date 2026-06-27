@@ -4,11 +4,12 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FiArrowRight, FiLock } from "react-icons/fi";
+import { ADMIN_ROUTES, isAdminPath } from "@/lib/blog/admin-paths";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/studio/dashboard";
+  const next = searchParams.get("next") || ADMIN_ROUTES.dashboard;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +28,7 @@ function LoginForm() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "That didn't work — please check your email and password.");
-      router.push(next.startsWith("/studio") ? next : "/studio/dashboard");
+      router.push(isAdminPath(next) ? next : ADMIN_ROUTES.dashboard);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
@@ -39,9 +40,9 @@ function LoginForm() {
   return (
     <div className="studio-gate">
       <div className="studio-gate-card studio-login-card">
-        <div className="studio-gate-badge"><FiLock /> Sign in</div>
-        <h1>Welcome to Leadnator</h1>
-        <p>Sign in to manage your blog, track visitors, and view leads from your contact page.</p>
+        <div className="studio-gate-badge"><FiLock /> Admin sign in</div>
+        <h1>Leadnator Admin</h1>
+        <p>Sign in to manage vlogs, track visitors, and view leads from your contact page.</p>
 
         {error && <div className="studio-error">{error}</div>}
 
@@ -79,7 +80,7 @@ function LoginForm() {
   );
 }
 
-export default function StudioLoginPage() {
+export default function AdminLoginPage() {
   return (
     <Suspense fallback={<div className="studio-gate"><div className="studio-gate-card">Loading…</div></div>}>
       <LoginForm />

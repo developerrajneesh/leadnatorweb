@@ -31,3 +31,11 @@ export type BlogPostSummary = Pick<
   BlogPost,
   "id" | "slug" | "title" | "excerpt" | "coverImage" | "status" | "author" | "tags" | "createdAt" | "updatedAt" | "publishedAt"
 >;
+
+export type PaginatedPosts = {
+  items: BlogPostSummary[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};

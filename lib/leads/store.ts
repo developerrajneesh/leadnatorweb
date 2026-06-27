@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { getDb } from "@/lib/db/mongodb";
-import type { ContactLead, ContactLeadInput } from "./types";
+import type { ContactLead, ContactLeadInput, ContactLeadUpdate, LeadStatus } from "./types";
 
 const LEADS_COLLECTION = "contact_leads";
 const SETTINGS_COLLECTION = "studio_settings";
@@ -38,6 +38,7 @@ export async function createContactLead(input: ContactLeadInput): Promise<Contac
     id: uuidv4(),
     ...data,
     source: "contact_form",
+    status: "new",
     createdAt: new Date().toISOString(),
   };
   const col = await leadsCollection();
@@ -52,13 +53,53 @@ export async function listContactLeads(limit = 200): Promise<ContactLead[]> {
     .sort({ createdAt: -1 })
     .limit(limit)
     .toArray();
-  return rows as ContactLead[];
+  return rows.map((r) => normalizeLead(r as ContactLead));
 }
 
 export async function deleteContactLead(id: string): Promise<boolean> {
   const col = await leadsCollection();
   const result = await col.deleteOne({ id });
   return result.deletedCount === 1;
+}
+
+const LEAD_STATUSES: LeadStatus[] = ["new", "contacted", "closed"];
+
+export async function updateContactLead(
+  id: string,
+  patch: ContactLeadUpdate,
+): Promise<ContactLead | null> {
+  const col = await leadsCollection();
+  const update: Partial<ContactLead> = { updatedAt: new Date().toISOString() };
+
+  if (patch.status !== undefined) {
+    if (!LEAD_STATUSES.includes(patch.status)) return null;
+    update.status = patch.status;
+  }
+  if (patch.notes !== undefined) {
+    update.notes = patch.notes.trim().slice(0, 2000);
+  }
+
+  const result = await col.findOneAndUpdate(
+    { id },
+    { $set: update },
+    { returnDocument: "after", projection: { _id: 0 } },
+  );
+
+  if (!result) return null;
+  const lead = result as ContactLead;
+  if (!lead.status) lead.status = "new";
+  return lead;
+}
+
+export function normalizeLead(row: ContactLead): ContactLead {
+  return { ...row, status: row.status ?? "new" };
+}
+
+export async function getContactLead(id: string): Promise<ContactLead | null> {
+  const col = await leadsCollection();
+  const row = await col.findOne({ id }, { projection: { _id: 0 } });
+  if (!row) return null;
+  return normalizeLead(row as ContactLead);
 }
 
 export async function getLeadsWebhookUrl(): Promise<string | null> {

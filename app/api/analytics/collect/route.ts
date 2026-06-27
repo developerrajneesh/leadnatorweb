@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isAdminPath } from "@/lib/blog/admin-paths";
 import { recordPageView, updateViewDuration } from "@/lib/analytics/store";
 import { applyVisitorCookie, resolveVisitorId } from "@/lib/analytics/visitor";
 
@@ -19,7 +20,7 @@ export async function POST(req: Request) {
     const path = typeof body.path === "string" ? body.path : "/";
     const clientVisitorId = typeof body.visitorId === "string" ? body.visitorId : "";
 
-    if (path.startsWith("/studio") || path.startsWith("/api")) {
+    if (isAdminPath(path) || path.startsWith("/api")) {
       return NextResponse.json({ ok: true });
     }
 

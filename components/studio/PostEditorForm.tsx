@@ -17,6 +17,7 @@ import {
   FiUpload,
   FiX,
 } from "react-icons/fi";
+import { ADMIN_ROUTES } from "@/lib/blog/admin-paths";
 import type { BlogPost, PostStatus } from "@/lib/blog/types";
 import { contentHtmlForEditor, hasPostContent } from "@/lib/blog/content";
 import { slugify } from "@/lib/blog/slug";
@@ -109,7 +110,7 @@ export default function PostEditorForm({ post, mode }: Props) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Save failed");
-      router.push("/studio/dashboard");
+      router.push(ADMIN_ROUTES.dashboard);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Save failed");
@@ -124,7 +125,7 @@ export default function PostEditorForm({ post, mode }: Props) {
     <div className="se">
       <div className="se-toolbar">
         <div className="se-toolbar-left">
-          <Link href="/studio/dashboard" className="se-back">
+          <Link href={ADMIN_ROUTES.dashboard} className="se-back">
             <FiArrowLeft aria-hidden /> Posts
           </Link>
           <span className={`se-status se-status-${status}`}>

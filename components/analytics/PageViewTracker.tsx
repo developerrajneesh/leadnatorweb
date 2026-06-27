@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { isAdminPath } from "@/lib/blog/admin-paths";
 import { resolveClientUtm } from "@/lib/analytics/utm";
 
 const VISITOR_KEY = "ln_visitor_id";
@@ -48,7 +49,7 @@ export default function PageViewTracker() {
   }, []);
 
   useEffect(() => {
-    if (!pathname || pathname.startsWith("/studio")) return;
+    if (!pathname || isAdminPath(pathname)) return;
 
     let cancelled = false;
 

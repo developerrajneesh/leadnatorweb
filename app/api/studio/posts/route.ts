@@ -1,11 +1,24 @@
 import { NextResponse } from "next/server";
 import { requireSession } from "@/lib/blog/auth";
 import { hasPostContent } from "@/lib/blog/content";
-import { createPost, listPosts } from "@/lib/blog/store";
+import { createPost, listPosts, listPostsPaginated } from "@/lib/blog/store";
+import type { PostStatus } from "@/lib/blog/types";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     await requireSession();
+    const { searchParams } = new URL(req.url);
+    const pageParam = searchParams.get("page");
+
+    if (pageParam) {
+      const page = Number(pageParam) || 1;
+      const limit = Number(searchParams.get("limit")) || 10;
+      const status = (searchParams.get("status") || "all") as PostStatus | "all";
+      const search = searchParams.get("q") || undefined;
+      const result = await listPostsPaginated({ page, limit, status, search });
+      return NextResponse.json(result);
+    }
+
     const posts = await listPosts();
     return NextResponse.json(posts);
   } catch {

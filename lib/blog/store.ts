@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { getDb } from "@/lib/db/mongodb";
-import type { BlogPost, BlogPostInput, BlogPostSummary, PostStatus } from "./types";
+import type { BlogPost, BlogPostInput, BlogPostSummary, PaginatedPosts, PostStatus } from "./types";
 import { uniqueSlug } from "./slug";
 import { getFirstImageFromContent, resolvePostCoverImage } from "./images";
 
@@ -63,6 +63,49 @@ export async function listPosts(status?: PostStatus): Promise<BlogPostSummary[]>
   const query = status ? { status } : {};
   const posts = await col.find(query, { projection: POST_PROJECTION }).sort({ updatedAt: -1 }).toArray();
   return posts.map(toSummary);
+}
+
+export async function listPostsPaginated(options: {
+  page?: number;
+  limit?: number;
+  status?: PostStatus | "all";
+  search?: string;
+}): Promise<PaginatedPosts> {
+  const page = Math.max(1, options.page ?? 1);
+  const limit = Math.min(50, Math.max(1, options.limit ?? 10));
+  const skip = (page - 1) * limit;
+
+  const query: Record<string, unknown> = {};
+  if (options.status && options.status !== "all") {
+    query.status = options.status;
+  }
+  const search = options.search?.trim();
+  if (search) {
+    query.$or = [
+      { title: { $regex: search, $options: "i" } },
+      { slug: { $regex: search, $options: "i" } },
+      { excerpt: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const col = await postsCollection();
+  const [rows, total] = await Promise.all([
+    col
+      .find(query, { projection: POST_PROJECTION })
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .toArray(),
+    col.countDocuments(query),
+  ]);
+
+  return {
+    items: rows.map(toSummary),
+    total,
+    page,
+    limit,
+    totalPages: Math.max(1, Math.ceil(total / limit)),
+  };
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {

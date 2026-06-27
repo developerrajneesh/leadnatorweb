@@ -5,23 +5,24 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  FiArrowLeft, FiBarChart2, FiEdit3, FiExternalLink, FiEye, FiGrid, FiList, FiLogIn, FiLogOut, FiPlus, FiUser, FiUsers,
+  FiArrowLeft, FiBarChart2, FiExternalLink, FiEye, FiGrid, FiList, FiLogIn, FiLogOut, FiPlus, FiUser, FiUsers,
 } from "react-icons/fi";
-import { EXIT_SITE_LABEL, EXIT_SITE_URL, STUDIO_NAV } from "@/lib/blog/nav";
+import { ADMIN_ROUTES } from "@/lib/blog/admin-paths";
+import { ADMIN_NAV, EXIT_SITE_LABEL, EXIT_SITE_URL } from "@/lib/blog/nav";
 
 const ICONS = {
   grid: FiGrid,
-  plus: FiPlus,
-  eye: FiEye,
   list: FiList,
+  plus: FiPlus,
 };
 
 function headerSubtitle(pathname: string | null): string {
   if (!pathname) return "Create content, track visitors, and manage leads — all in one place";
-  if (pathname === "/studio/dashboard") return "Your home for blog posts, traffic and incoming leads";
-  if (pathname.startsWith("/studio/traffic")) return "See who's visiting your site and where they come from";
-  if (pathname.startsWith("/studio/leads")) return "Messages from your contact page, ready when you are";
-  if (pathname.startsWith("/studio/profile")) return "Your photo and name on every blog post";
+  if (pathname === ADMIN_ROUTES.dashboard) return "Quick overview — vlogs, traffic and leads";
+  if (pathname.startsWith(ADMIN_ROUTES.traffic)) return "See who's visiting your site and where they come from";
+  if (pathname.startsWith(ADMIN_ROUTES.leads)) return "Contact form messages — reply, export or forward to your CRM";
+  if (pathname.startsWith(ADMIN_ROUTES.profile)) return "Your photo and name on every blog post";
+  if (pathname.startsWith(ADMIN_ROUTES.vlogs)) return "Your full content library — search, filter, preview and edit";
   if (pathname.includes("/posts/new")) return "Start writing — your next article begins here";
   if (pathname.includes("/edit")) return "Update your article, cover image and publish settings";
   return "Leadnator — All in One CRM";
@@ -54,7 +55,7 @@ export default function StudioShell({
     setLoggingOut(true);
     try {
       await fetch("/api/studio/auth/logout", { method: "POST" });
-      router.push("/studio/login");
+      router.push(ADMIN_ROUTES.login);
       router.refresh();
     } finally {
       setLoggingOut(false);
@@ -62,13 +63,12 @@ export default function StudioShell({
   }
 
   function isActive(href: string) {
-    if (href === "/studio/dashboard") return pathname === href;
-    if (href === "/studio/traffic") return pathname === href || pathname?.startsWith("/studio/traffic");
-    if (href === "/studio/leads") return pathname === href || pathname?.startsWith("/studio/leads");
-    if (href === "/studio/profile") return pathname === href || pathname?.startsWith("/studio/profile");
-    if (href === "/studio/posts/new") return pathname?.includes("/posts/new");
-    if (href === "/blog") return pathname === "/blog";
-    if (href === "/blog#posts") return pathname?.startsWith("/blog/");
+    if (href === ADMIN_ROUTES.dashboard) return pathname === href;
+    if (href === ADMIN_ROUTES.traffic) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.traffic);
+    if (href === ADMIN_ROUTES.leads) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.leads);
+    if (href === ADMIN_ROUTES.profile) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.profile);
+    if (href === ADMIN_ROUTES.newPost) return pathname?.includes("/posts/new");
+    if (href === ADMIN_ROUTES.vlogs) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.vlogs);
     return pathname === href;
   }
 
@@ -78,7 +78,7 @@ export default function StudioShell({
     <div className="studio">
       <aside className="studio-sidebar">
         <div className="studio-sidebar-scroll">
-          <Link href="/studio/dashboard" className="studio-brand">
+          <Link href={ADMIN_ROUTES.dashboard} className="studio-brand">
             <Image
               src="/leadnator_logo.png"
               alt="Leadnator"
@@ -89,13 +89,13 @@ export default function StudioShell({
             />
             <span className="studio-brand-copy">
               <span className="studio-brand-name">Leadnator</span>
-              <span className="studio-brand-sub">All in One CRM</span>
+              <span className="studio-brand-sub">Admin</span>
             </span>
           </Link>
 
           <p className="studio-sidebar-label">Content</p>
-          <nav className="studio-nav" aria-label="Studio navigation">
-            {STUDIO_NAV.map((item) => {
+          <nav className="studio-nav" aria-label="Admin navigation">
+            {ADMIN_NAV.map((item) => {
               const Icon = ICONS[item.icon];
               return (
                 <Link
@@ -107,24 +107,21 @@ export default function StudioShell({
                 </Link>
               );
             })}
-            <Link href="/studio/posts/new" className={pathname?.includes("/edit") ? "active" : ""}>
-              <FiEdit3 aria-hidden /> Edit posts
-            </Link>
           </nav>
 
           <p className="studio-sidebar-label">Analytics</p>
           <nav className="studio-nav studio-nav-analytics">
-            <Link href="/studio/traffic" className={isActive("/studio/traffic") ? "active" : ""}>
+            <Link href={ADMIN_ROUTES.traffic} className={isActive(ADMIN_ROUTES.traffic) ? "active" : ""}>
               <FiBarChart2 aria-hidden /> Website visitors
             </Link>
-            <Link href="/studio/leads" className={isActive("/studio/leads") ? "active" : ""}>
+            <Link href={ADMIN_ROUTES.leads} className={isActive(ADMIN_ROUTES.leads) ? "active" : ""}>
               <FiUsers aria-hidden /> Your leads
             </Link>
           </nav>
 
           <p className="studio-sidebar-label">Account</p>
           <nav className="studio-nav studio-nav-secondary">
-            <Link href="/studio/profile" className={isActive("/studio/profile") ? "active" : ""}>
+            <Link href={ADMIN_ROUTES.profile} className={isActive(ADMIN_ROUTES.profile) ? "active" : ""}>
               <FiUser aria-hidden /> Author profile
             </Link>
           </nav>
@@ -139,7 +136,7 @@ export default function StudioShell({
 
         <div className="studio-sidebar-foot">
           {userEmail ? (
-            <Link href="/studio/profile" className="studio-sidebar-user" title="Edit author profile">
+            <Link href={ADMIN_ROUTES.profile} className="studio-sidebar-user" title="Edit author profile">
               <span className="studio-sidebar-avatar" aria-hidden>
                 {userEmail.charAt(0).toUpperCase()}
               </span>
@@ -152,7 +149,7 @@ export default function StudioShell({
               <FiLogOut aria-hidden /> {loggingOut ? "Signing out…" : "Sign out"}
             </button>
           ) : (
-            <Link href="/studio/login" className="studio-sidebar-login">
+            <Link href={ADMIN_ROUTES.login} className="studio-sidebar-login">
               <FiLogIn aria-hidden /> Login
             </Link>
           )}

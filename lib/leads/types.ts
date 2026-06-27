@@ -1,3 +1,5 @@
+export type LeadStatus = "new" | "contacted" | "closed";
+
 export type ContactLead = {
   id: string;
   name: string;
@@ -6,7 +8,10 @@ export type ContactLead = {
   interest: string;
   message: string;
   source: "contact_form";
+  status: LeadStatus;
+  notes?: string;
   createdAt: string;
+  updatedAt?: string;
 };
 
 export type ContactLeadInput = {
@@ -15,4 +20,9 @@ export type ContactLeadInput = {
   company?: string;
   interest: string;
   message: string;
+};
+
+export type ContactLeadUpdate = {
+  status?: LeadStatus;
+  notes?: string;
 };

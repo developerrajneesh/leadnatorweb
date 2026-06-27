@@ -43,7 +43,8 @@ export async function recordPageView(input: {
     utmContent: input.utmContent,
   };
   const platform = resolveTrafficSource(referrer, utm);
-  const path = input.path.slice(0, 500);
+  const rawPath = input.path.slice(0, 500);
+  const path = rawPath.length > 1 && rawPath.endsWith("/") ? rawPath.slice(0, -1) : rawPath;
   const blogSlug = extractBlogSlug(path);
 
   const id = uuidv4();
@@ -102,10 +103,12 @@ type AggRow = {
 function toPageStat(row: AggRow, title?: string, slug?: string): PageStat {
   const avgDurationSec =
     row.timedViews > 0 ? Math.round(row.totalDurationSec / row.timedViews) : 0;
+  const inferredSlug = extractBlogSlug(row._id);
+  const resolvedSlug = slug ?? (inferredSlug === "__index__" ? undefined : inferredSlug);
   return {
     path: row._id,
     title,
-    slug,
+    slug: resolvedSlug,
     views: row.views,
     uniqueVisitors: row.visitors.length,
     totalDurationSec: row.totalDurationSec,
@@ -240,9 +243,28 @@ export async function getAnalyticsSummary(rangeDays = 30): Promise<AnalyticsSumm
   const blogPosts: PageStat[] = published
     .map((post) => {
       const path = `/blog/${post.slug}`;
-      return pageMap.get(path) ?? emptyStat(path, post.title, post.slug);
+      const fromViews = pageMap.get(path);
+      if (fromViews) {
+        return { ...fromViews, title: post.title, slug: post.slug };
+      }
+      return emptyStat(path, post.title, post.slug);
     })
     .sort((a, b) => b.views - a.views);
+
+  const knownBlogPaths = new Set(blogPosts.map((p) => p.path));
+  for (const row of pageRows) {
+    if (!row._id.startsWith("/blog/") || row._id === "/blog" || knownBlogPaths.has(row._id)) {
+      continue;
+    }
+    const slug = extractBlogSlug(row._id);
+    blogPosts.push({
+      ...toPageStat(row),
+      title: resolvePageLabel(row._id, cmsTitleByPath),
+      slug: slug === "__index__" ? undefined : slug,
+    });
+    knownBlogPaths.add(row._id);
+  }
+  blogPosts.sort((a, b) => b.views - a.views);
 
   const blogIndex = pageMap.get("/blog");
   if (blogIndex) {

@@ -7,11 +7,11 @@ import { DONUT_TOP_N, groupPlatformRows, truncateLabel } from "@/lib/analytics/p
 type Props = {
   rows: PlatformStat[];
   colorFor: (name: string) => string;
+  compact?: boolean;
 };
 
-const SIZE = 200;
-const R = 72;
-const STROKE = 22;
+const DEFAULT = { size: 200, r: 72, stroke: 22 };
+const COMPACT = { size: 148, r: 52, stroke: 16 };
 const OTHERS_COLOR = "#94a3b8";
 
 function arcPath(cx: number, cy: number, r: number, start: number, end: number) {
@@ -23,9 +23,11 @@ function arcPath(cx: number, cy: number, r: number, start: number, end: number) 
   return `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`;
 }
 
-export default function PlatformDonutChart({ rows, colorFor }: Props) {
+export default function PlatformDonutChart({ rows, colorFor, compact = false }: Props) {
   const [hover, setHover] = useState<number | null>(null);
   const hiddenCount = Math.max(0, rows.length - DONUT_TOP_N);
+  const dims = compact ? COMPACT : DEFAULT;
+  const { size: SIZE, r: R, stroke: STROKE } = dims;
 
   const chart = useMemo(() => {
     const grouped = groupPlatformRows(rows, DONUT_TOP_N);
@@ -58,7 +60,7 @@ export default function PlatformDonutChart({ rows, colorFor }: Props) {
   const centerLabel = active ? truncateLabel(active.platform, 16) : "Total views";
 
   return (
-    <div className="sa-viz sa-viz-donut">
+    <div className={`sa-viz sa-viz-donut${compact ? " sa-viz-donut-compact" : ""}`}>
       <svg viewBox={`0 0 ${SIZE} ${SIZE}`} className="sa-viz-svg sa-viz-donut-svg" role="img" aria-label="Traffic share donut chart">
         <circle cx={cx} cy={cy} r={R} fill="#f1f5f9" />
         {chart.segments.map((seg, i) => (
@@ -95,14 +97,18 @@ export default function PlatformDonutChart({ rows, colorFor }: Props) {
               title={seg.platform}
             >
               <span className="sa-viz-legend-dot" style={{ background: seg.color }} />
-              <span className="sa-viz-legend-name">{truncateLabel(seg.platform)}</span>
+              <span className="sa-viz-legend-name">
+                {compact ? seg.platform : truncateLabel(seg.platform)}
+              </span>
               <span className="sa-viz-legend-meta">
-                {seg.views.toLocaleString()} · {seg.uniqueVisitors} unique · {seg.pct}%
+                {compact
+                  ? `${seg.views.toLocaleString()} views · ${seg.pct}%`
+                  : `${seg.views.toLocaleString()} · ${seg.uniqueVisitors} unique · ${seg.pct}%`}
               </span>
             </li>
           ))}
         </ul>
-        {hiddenCount > 0 && (
+        {hiddenCount > 0 && !compact && (
           <p className="sa-viz-legend-note">
             Top {DONUT_TOP_N} in the chart · {hiddenCount} more in the list below
           </p>

@@ -91,7 +91,7 @@ async function main() {
   }
 
   await client.close();
-  console.log("Done. Login at /studio/login");
+  console.log("Done. Login at /admin/login");
 }
 
 main().catch((err) => {

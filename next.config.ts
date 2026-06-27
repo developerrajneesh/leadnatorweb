@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { ADMIN_PREFIX } from "./lib/blog/admin-paths";
 
 const endpoint = process.env.ENDPOINT_URL?.trim() || "";
 const projectMatch = endpoint.match(/https:\/\/([^.]+)\.storage\.supabase\.co/);
@@ -12,6 +13,12 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   compress: true,
   htmlLimitedBots: /.*/,
+  async redirects() {
+    return [
+      { source: "/studio", destination: ADMIN_PREFIX, permanent: true },
+      { source: "/studio/:path*", destination: `${ADMIN_PREFIX}/:path*`, permanent: true },
+    ];
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
