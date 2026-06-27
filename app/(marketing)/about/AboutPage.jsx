@@ -182,7 +182,7 @@ function Cta({ onGoto }) {
             <h2>Ready to grow with Leadnator?</h2>
             <p>Start your free trial or talk to our team on WhatsApp — we reply within minutes during business hours.</p>
             <ul className="ln-cta-list">
-              <li><FiCheck /> 14-day free trial, no credit card</li>
+              <li><FiCheck /> 2-day free trial, no credit card</li>
               <li><FiCheck /> Zero-fee WhatsApp setup</li>
               <li><FiCheck /> Cancel anytime on monthly plans</li>
             </ul>

@@ -201,7 +201,7 @@ export default async function BlogPostPage({ params }: Props) {
                 and never miss a customer message again.
               </p>
               <ul className="ln-cta-list">
-                <li><FiCheck /> 14-day free trial — no credit card</li>
+                <li><FiCheck /> 2-day free trial — no credit card</li>
                 <li><FiCheck /> Official WhatsApp Business API</li>
                 <li><FiCheck /> Setup in under 12 minutes</li>
               </ul>
