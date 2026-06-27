@@ -170,7 +170,7 @@ export const MARKETING_PAGES: Array<{
     description:
       "Leadnator integration partners: Meta Business, Stripe, Google Cloud, HubSpot, Zapier, Shopify, Razorpay and enterprise-ready APIs for your growth stack.",
     keywords: "WhatsApp API integrations, CRM Zapier integration, Meta Business Partner CRM",
-    priority: 0.8,
+    priority: 0.7,
     changefreq: "monthly",
   },
   {
@@ -180,7 +180,7 @@ export const MARKETING_PAGES: Array<{
       "Compare Leadnator with top WhatsApp CRMs in India. Feature matrix, pricing savings and why teams switch for Meta Ads, email and AI automation in one platform.",
     keywords:
       "AiSensy vs Leadnator, Gallabox alternative, Interakt alternative, best WhatsApp CRM India 2026",
-    priority: 0.8,
+    priority: 0.6,
     changefreq: "monthly",
   },
   {
@@ -189,7 +189,7 @@ export const MARKETING_PAGES: Array<{
     description:
       "Leadnator FAQ: WhatsApp Business API setup, blue tick, Meta Ads, email SMTP, billing in INR, data security, integrations and support — 30+ detailed answers.",
     keywords: "WhatsApp Business API FAQ, WhatsApp CRM setup India, Meta Ads CRM FAQ",
-    priority: 0.7,
+    priority: 0.6,
     changefreq: "monthly",
   },
   {
@@ -207,7 +207,7 @@ export const MARKETING_PAGES: Array<{
     description:
       "Leadnator developer documentation. REST endpoints for WhatsApp Cloud API, Meta Ads, email, leads, calendar, storage, AI and inbound webhooks with curl examples.",
     keywords: "WhatsApp API documentation, CRM REST API, Meta webhook API, Leadnator developer",
-    priority: 0.8,
+    priority: 0.7,
     changefreq: "monthly",
   },
   {
@@ -216,8 +216,8 @@ export const MARKETING_PAGES: Array<{
     description:
       "Contact Leadnator for demos, sales and support. WhatsApp +917888341096, phone support, offices in India, Singapore, UAE and USA. Enterprise onboarding available.",
     keywords: "Leadnator contact, WhatsApp CRM demo India, enterprise CRM sales",
-    priority: 0.6,
-    changefreq: "yearly",
+    priority: 0.9,
+    changefreq: "monthly",
   },
   {
     path: "/site-map",
@@ -225,7 +225,7 @@ export const MARKETING_PAGES: Array<{
     description:
       "Complete sitemap of Leadnator marketing pages: features, pricing, FAQ, API docs, partners, compare, contact and legal policies.",
     keywords: "Leadnator sitemap, site navigation",
-    priority: 0.4,
+    priority: 0.2,
     changefreq: "monthly",
   },
   {

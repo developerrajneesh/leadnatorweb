@@ -3,7 +3,7 @@ import { getDb } from "@/lib/db/mongodb";
 import { listPosts } from "@/lib/blog/store";
 import { referrerLabel, resolveTrafficSource } from "./referrer";
 import { extractBlogSlug } from "./format";
-import type { AnalyticsSummary, PageStat, PageViewRecord } from "./types";
+import type { AnalyticsSummary, PageStat, PageViewRecord, VisitorLocation } from "./types";
 import { resolvePageLabel } from "./page-labels";
 
 const COLLECTION = "site_page_views";
@@ -32,6 +32,13 @@ export async function recordPageView(input: {
   utmCampaign?: string;
   utmTerm?: string;
   utmContent?: string;
+  country?: string;
+  countryName?: string;
+  region?: string;
+  city?: string;
+  org?: string;
+  latitude?: number;
+  longitude?: number;
 }): Promise<string> {
   const col = await viewsCollection();
   const referrer = (input.referrer || "").trim();
@@ -62,11 +69,64 @@ export async function recordPageView(input: {
     visitorId: input.visitorId.slice(0, 64),
     clientVisitorId: input.clientVisitorId?.slice(0, 64),
     fingerprint: input.fingerprint?.slice(0, 64),
+    country: input.country?.slice(0, 8),
+    countryName: input.countryName?.slice(0, 80),
+    region: input.region?.slice(0, 120),
+    city: input.city?.slice(0, 120),
+    org: input.org?.slice(0, 160),
+    latitude: typeof input.latitude === "number" ? input.latitude : undefined,
+    longitude: typeof input.longitude === "number" ? input.longitude : undefined,
     createdAt: new Date().toISOString(),
   };
 
   await col.insertOne(record);
   return id;
+}
+
+/** One row per visitor (IP) with their resolved location, for the admin Visitors page. */
+export async function getVisitorLocations(days = 30): Promise<VisitorLocation[]> {
+  const col = await viewsCollection();
+  const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+
+  const rows = await col
+    .aggregate([
+      { $match: { createdAt: { $gte: since } } },
+      { $sort: { createdAt: 1 } },
+      {
+        $group: {
+          _id: "$visitorId",
+          views: { $sum: 1 },
+          firstSeen: { $first: "$createdAt" },
+          lastSeen: { $last: "$createdAt" },
+          lastPath: { $last: "$path" },
+          country: { $last: "$country" },
+          countryName: { $last: "$countryName" },
+          region: { $last: "$region" },
+          city: { $last: "$city" },
+          org: { $last: "$org" },
+          latitude: { $last: "$latitude" },
+          longitude: { $last: "$longitude" },
+        },
+      },
+      { $sort: { lastSeen: -1 } },
+      { $limit: 500 },
+    ])
+    .toArray();
+
+  return rows.map((r) => ({
+    visitorId: String(r._id || ""),
+    views: r.views as number,
+    firstSeen: r.firstSeen as string,
+    lastSeen: r.lastSeen as string,
+    lastPath: r.lastPath as string | undefined,
+    country: r.country as string | undefined,
+    countryName: r.countryName as string | undefined,
+    region: r.region as string | undefined,
+    city: r.city as string | undefined,
+    org: r.org as string | undefined,
+    latitude: r.latitude as number | undefined,
+    longitude: r.longitude as number | undefined,
+  }));
 }
 
 export async function updateViewDuration(viewId: string, durationSec: number): Promise<void> {

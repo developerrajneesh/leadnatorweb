@@ -3,35 +3,36 @@ import { createHash } from "crypto";
 export const VISITOR_COOKIE = "ln_vid";
 const COOKIE_MAX_AGE = 365 * 24 * 60 * 60;
 
+/**
+ * Real client IP. Behind a proxy/CDN the original IP is the first entry of
+ * x-forwarded-for; otherwise fall back to x-real-ip.
+ */
 export function getClientIp(req: Request): string {
   const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "0.0.0.0";
-  return req.headers.get("x-real-ip")?.trim() || "0.0.0.0";
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  const realIp = req.headers.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
+  // Common platform-specific fallbacks.
+  return (
+    req.headers.get("cf-connecting-ip")?.trim() ||
+    req.headers.get("x-vercel-forwarded-for")?.trim() ||
+    "0.0.0.0"
+  );
 }
 
-/** Stable device hash — same IP + browser ≈ same person (even after cache clear). */
-export function buildFingerprint(ip: string, userAgent: string): string {
+/** Stable, salted hash of the IP address — one hash per IP. */
+export function buildIpHash(ip: string): string {
   const salt = process.env.ANALYTICS_VISITOR_SALT || "leadnator";
-  return createHash("sha256")
-    .update(`${salt}|${ip}|${userAgent}`)
-    .digest("hex")
-    .slice(0, 32);
-}
-
-function parseCookie(cookieHeader: string | null, name: string): string | null {
-  if (!cookieHeader) return null;
-  const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${name}=([^;]+)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
-function isValidVisitorId(id: string): boolean {
-  return /^[a-f0-9]{32}$/i.test(id) || /^[0-9a-f-]{36}$/i.test(id);
+  return createHash("sha256").update(`${salt}|${ip}`).digest("hex").slice(0, 32);
 }
 
 /**
- * Resolve a stable visitor ID for unique counts.
- * Priority: cookie → fingerprint (IP+UA hash) → client localStorage UUID.
- * Fingerprint is preferred over a fresh client UUID so cache clears don't inflate uniques.
+ * Resolve a visitor identity purely from the client IP address.
+ * Same IP = same visitor, so unique visitors are counted per IP
+ * (independent of cookies, cache clears, or browser).
  */
 export function resolveVisitorId(
   req: Request,
@@ -43,26 +44,14 @@ export function resolveVisitorId(
   shouldSetCookie: boolean;
 } {
   const ip = getClientIp(req);
-  const ua = req.headers.get("user-agent") || "";
-  const fingerprint = buildFingerprint(ip, ua);
-  const cookieId = parseCookie(req.headers.get("cookie"), VISITOR_COOKIE);
+  const ipHash = buildIpHash(ip);
   const trimmedClient = clientId?.trim().slice(0, 64);
 
-  if (cookieId && isValidVisitorId(cookieId)) {
-    return {
-      visitorId: cookieId,
-      clientVisitorId: trimmedClient,
-      fingerprint,
-      shouldSetCookie: false,
-    };
-  }
-
-  const visitorId = fingerprint || trimmedClient || "unknown";
   return {
-    visitorId,
+    visitorId: ipHash,
     clientVisitorId: trimmedClient,
-    fingerprint,
-    shouldSetCookie: true,
+    fingerprint: ipHash,
+    shouldSetCookie: false,
   };
 }
 

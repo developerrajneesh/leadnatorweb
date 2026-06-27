@@ -5,10 +5,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  FiArrowLeft, FiBarChart2, FiExternalLink, FiEye, FiGrid, FiList, FiLogIn, FiLogOut, FiPlus, FiUser, FiUsers,
+  FiBarChart2, FiGrid, FiList, FiLogIn, FiLogOut, FiMapPin, FiPlus, FiUser, FiUsers,
 } from "react-icons/fi";
 import { ADMIN_ROUTES } from "@/lib/blog/admin-paths";
-import { ADMIN_NAV, EXIT_SITE_LABEL, EXIT_SITE_URL } from "@/lib/blog/nav";
+import { ADMIN_NAV } from "@/lib/blog/nav";
 
 const ICONS = {
   grid: FiGrid,
@@ -65,6 +65,7 @@ export default function StudioShell({
   function isActive(href: string) {
     if (href === ADMIN_ROUTES.dashboard) return pathname === href;
     if (href === ADMIN_ROUTES.traffic) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.traffic);
+    if (href === ADMIN_ROUTES.visitors) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.visitors);
     if (href === ADMIN_ROUTES.leads) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.leads);
     if (href === ADMIN_ROUTES.profile) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.profile);
     if (href === ADMIN_ROUTES.newPost) return pathname?.includes("/posts/new");
@@ -114,6 +115,9 @@ export default function StudioShell({
             <Link href={ADMIN_ROUTES.traffic} className={isActive(ADMIN_ROUTES.traffic) ? "active" : ""}>
               <FiBarChart2 aria-hidden /> Website visitors
             </Link>
+            <Link href={ADMIN_ROUTES.visitors} className={isActive(ADMIN_ROUTES.visitors) ? "active" : ""}>
+              <FiMapPin aria-hidden /> Visitor locations
+            </Link>
             <Link href={ADMIN_ROUTES.leads} className={isActive(ADMIN_ROUTES.leads) ? "active" : ""}>
               <FiUsers aria-hidden /> Your leads
             </Link>
@@ -125,40 +129,6 @@ export default function StudioShell({
               <FiUser aria-hidden /> Author profile
             </Link>
           </nav>
-
-          <p className="studio-sidebar-label">Public</p>
-          <nav className="studio-nav studio-nav-secondary">
-            <Link href="/blog" target="_blank" rel="noopener noreferrer">
-              <FiEye aria-hidden /> Open blog
-            </Link>
-          </nav>
-        </div>
-
-        <div className="studio-sidebar-foot">
-          {userEmail ? (
-            <Link href={ADMIN_ROUTES.profile} className="studio-sidebar-user" title="Edit author profile">
-              <span className="studio-sidebar-avatar" aria-hidden>
-                {userEmail.charAt(0).toUpperCase()}
-              </span>
-              <span className="studio-sidebar-user-email">{userEmail}</span>
-            </Link>
-          ) : null}
-
-          {userEmail ? (
-            <button type="button" onClick={logout} className="studio-logout" disabled={loggingOut}>
-              <FiLogOut aria-hidden /> {loggingOut ? "Signing out…" : "Sign out"}
-            </button>
-          ) : (
-            <Link href={ADMIN_ROUTES.login} className="studio-sidebar-login">
-              <FiLogIn aria-hidden /> Login
-            </Link>
-          )}
-
-          <a href={EXIT_SITE_URL} className="studio-exit-btn">
-            <FiArrowLeft aria-hidden />
-            {EXIT_SITE_LABEL}
-            <FiExternalLink aria-hidden />
-          </a>
         </div>
       </aside>
 
@@ -167,6 +137,17 @@ export default function StudioShell({
           <div className="studio-topbar-inner">
             {title ? <h1>{title}</h1> : null}
             <p className="studio-topbar-sub">{tagline}</p>
+          </div>
+          <div className="studio-topbar-actions">
+            {userEmail ? (
+              <button type="button" onClick={logout} className="studio-topbar-logout" disabled={loggingOut}>
+                <FiLogOut aria-hidden /> {loggingOut ? "Signing out…" : "Sign out"}
+              </button>
+            ) : (
+              <Link href={ADMIN_ROUTES.login} className="studio-topbar-logout">
+                <FiLogIn aria-hidden /> Login
+              </Link>
+            )}
           </div>
         </header>
         <main className="studio-main">{children}</main>

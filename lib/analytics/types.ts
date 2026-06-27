@@ -10,14 +10,39 @@ export type PageViewRecord = {
   utmCampaign?: string;
   utmTerm?: string;
   utmContent?: string;
+  /** Salted hash of the client IP — unique visitors are counted per IP */
   visitorId: string;
-  /** Browser localStorage UUID (may change after cache clear) */
+  /** Browser localStorage UUID (kept for reference only, not used for counting) */
   clientVisitorId?: string;
-  /** Server hash from IP + user-agent */
+  /** Salted hash of the client IP (same as visitorId) */
   fingerprint?: string;
+  // ---- IP geolocation (from ipapi.co) ----
+  country?: string;       // ISO code, e.g. "IN"
+  countryName?: string;   // "India"
+  region?: string;        // "Delhi"
+  city?: string;          // "New Delhi"
+  org?: string;           // ISP / organisation
+  latitude?: number;
+  longitude?: number;
   durationSec?: number;
   createdAt: string;
   endedAt?: string;
+};
+
+/** Aggregated visitor with their resolved location, for the admin Visitors page. */
+export type VisitorLocation = {
+  visitorId: string;
+  country?: string;
+  countryName?: string;
+  region?: string;
+  city?: string;
+  org?: string;
+  latitude?: number;
+  longitude?: number;
+  views: number;
+  firstSeen: string;
+  lastSeen: string;
+  lastPath?: string;
 };
 
 export type PageStat = {

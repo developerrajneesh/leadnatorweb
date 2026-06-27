@@ -1,26 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  FiChevronLeft, FiChevronRight, FiEdit3, FiExternalLink, FiEye, FiFileText, FiGlobe,
+  FiChevronLeft, FiChevronRight, FiEdit3, FiExternalLink, FiFileText, FiGlobe,
   FiImage, FiPlus, FiRefreshCw, FiSearch, FiTrash2,
 } from "react-icons/fi";
 import { ADMIN_ROUTES } from "@/lib/blog/admin-paths";
 import StudioShell from "@/components/studio/StudioShell";
 import { shouldUnoptimizeImage } from "@/lib/blog/media";
 import type { BlogPostSummary, PaginatedPosts, PostStatus } from "@/lib/blog/types";
+import type { AnalyticsSummary, PageStat } from "@/lib/analytics/types";
 
 const PAGE_SIZE = 10;
-
-function formatDate(iso: string): string {
-  try {
-    return new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
-  } catch {
-    return iso;
-  }
-}
 
 type StatusFilter = PostStatus | "all";
 
@@ -34,6 +27,23 @@ export default function StudioVlogsPage() {
   const [status, setStatus] = useState<StatusFilter>("all");
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
+  const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
+
+  const loadAnalytics = useCallback(() => {
+    fetch("/api/studio/analytics?days=30")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: AnalyticsSummary | null) => setAnalytics(data))
+      .catch(() => setAnalytics(null));
+  }, []);
+
+  // views/visitors per blog post, keyed by slug
+  const statsBySlug = useMemo(() => {
+    const m = new Map<string, PageStat>();
+    (analytics?.blogPosts ?? []).forEach((p) => {
+      if (p.slug) m.set(p.slug, p);
+    });
+    return m;
+  }, [analytics]);
 
   const loadStats = useCallback(() => {
     fetch("/api/studio/posts")
@@ -65,7 +75,8 @@ export default function StudioVlogsPage() {
 
   useEffect(() => {
     loadStats();
-  }, [loadStats]);
+    loadAnalytics();
+  }, [loadStats, loadAnalytics]);
 
   useEffect(() => {
     load();
@@ -97,69 +108,56 @@ export default function StudioVlogsPage() {
 
   function refreshAll() {
     loadStats();
+    loadAnalytics();
     load();
   }
 
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
   const total = data?.total ?? 0;
-  const showingFrom = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
-  const showingTo = Math.min(page * PAGE_SIZE, total);
 
   return (
     <StudioShell
       title="All vlogs"
       subtitle="Your full content library — search, filter, preview and edit every article"
     >
-      <header className="sv-hero">
-        <div className="sv-hero-grid">
-          <div className="sv-hero-copy">
-            <span className="sv-hero-eyebrow">
-              <FiFileText aria-hidden /> Content library
-            </span>
-            <h2 className="sv-hero-title">All your vlogs</h2>
-            <p className="sv-hero-lead">
-              One place for every article you&apos;ve written. Find a post quickly, open it on the
-              public blog, or jump into the editor — published and drafts together.
-            </p>
-          </div>
+      <div className="sv-actionbar">
+        <Link href={ADMIN_ROUTES.newPost} className="ln-btn ln-btn-primary">
+          <FiPlus aria-hidden /> Write new vlog
+        </Link>
+        <button type="button" className="ln-btn ln-btn-outline" onClick={refreshAll} disabled={loading}>
+          <FiRefreshCw aria-hidden /> Refresh
+        </button>
+        <Link href="/blog" target="_blank" rel="noopener noreferrer" className="ln-btn ln-btn-outline">
+          <FiGlobe aria-hidden /> Open blog
+        </Link>
+      </div>
 
-          <div className="sv-hero-actions">
-            <Link href={ADMIN_ROUTES.newPost} className="ln-btn ln-btn-primary">
-              <FiPlus aria-hidden /> Write new vlog
-            </Link>
-            <button type="button" className="ln-btn ln-btn-outline" onClick={refreshAll} disabled={loading}>
-              <FiRefreshCw aria-hidden /> Refresh
-            </button>
-            <Link href="/blog" target="_blank" rel="noopener noreferrer" className="ln-btn ln-btn-ghost sv-hero-ghost">
-              <FiGlobe aria-hidden /> Open blog
-            </Link>
-          </div>
-        </div>
-
-        <div className="sv-hero-stats" aria-label="Vlog counts">
-          <div className="sv-stat">
+      <div className="sv-stats-row">
+        <div className="sv-stat-card">
+          <span className="sv-stat-ic sv-stat-ic-blue"><FiFileText aria-hidden /></span>
+          <div className="sv-stat-card-body">
             <strong>{stats.total}</strong>
             <span>Total vlogs</span>
           </div>
-          <div className="sv-stat sv-stat-published">
+        </div>
+        <div className="sv-stat-card">
+          <span className="sv-stat-ic sv-stat-ic-green"><FiGlobe aria-hidden /></span>
+          <div className="sv-stat-card-body">
             <strong>{stats.published}</strong>
             <span>Published</span>
           </div>
-          <div className="sv-stat sv-stat-draft">
+        </div>
+        <div className="sv-stat-card">
+          <span className="sv-stat-ic sv-stat-ic-amber"><FiEdit3 aria-hidden /></span>
+          <div className="sv-stat-card-body">
             <strong>{stats.drafts}</strong>
             <span>Drafts</span>
           </div>
-          {total > 0 && (
-            <div className="sv-stat sv-stat-muted">
-              <strong>{showingFrom}–{showingTo}</strong>
-              <span>Showing now</span>
-            </div>
-          )}
         </div>
-      </header>
+      </div>
 
-      <div className="sv-toolbar-card">
+      <div className="sv-toolbar-card sv-toolbar-row">
         <form className="sv-search" onSubmit={applySearch}>
           <FiSearch aria-hidden />
           <input
@@ -177,40 +175,22 @@ export default function StudioVlogsPage() {
           )}
         </form>
 
-        <div className="sv-toolbar-meta">
-          <p className="sv-result-line">
-            {loading ? (
-              "Loading…"
-            ) : query ? (
-              <>
-                <strong>{total}</strong> result{total === 1 ? "" : "s"} for &ldquo;{query}&rdquo;
-              </>
-            ) : status === "all" ? (
-              <>
-                <strong>{total}</strong> vlog{total === 1 ? "" : "s"} in your library
-              </>
-            ) : (
-              <>
-                <strong>{total}</strong> {status} vlog{total === 1 ? "" : "s"}
-              </>
-            )}
-          </p>
-          <div className="sv-filters" role="tablist" aria-label="Filter by status">
-            {(["all", "published", "draft"] as const).map((s) => (
-              <button
-                key={s}
-                type="button"
-                role="tab"
-                aria-selected={status === s}
-                className={status === s ? "active" : ""}
-                onClick={() => { setStatus(s); setPage(1); }}
-              >
-                {s === "all" ? "All" : s === "published" ? "Published" : "Drafts"}
-              </button>
-            ))}
-          </div>
+        <div className="sv-filters" role="tablist" aria-label="Filter by status">
+          {(["all", "published", "draft"] as const).map((s) => (
+            <button
+              key={s}
+              type="button"
+              role="tab"
+              aria-selected={status === s}
+              className={status === s ? "active" : ""}
+              onClick={() => { setStatus(s); setPage(1); }}
+            >
+              {s === "all" ? "All" : s === "published" ? "Published" : "Drafts"}
+            </button>
+          ))}
         </div>
       </div>
+
 
       {loading ? (
         <p className="studio-loading">Loading your vlogs…</p>
@@ -239,8 +219,8 @@ export default function StudioVlogsPage() {
                   <th aria-label="Cover" />
                   <th>Title</th>
                   <th>Status</th>
-                  <th>Last updated</th>
-                  <th>Public URL</th>
+                  <th>Views · 30d</th>
+                  <th>Visitors</th>
                   <th aria-label="Actions" />
                 </tr>
               </thead>
@@ -268,8 +248,12 @@ export default function StudioVlogsPage() {
                     <td>
                       <span className={`studio-status studio-status-${post.status}`}>{post.status}</span>
                     </td>
-                    <td className="sl-date">{formatDate(post.updatedAt)}</td>
-                    <td className="sv-slug-cell">/blog/{post.slug}</td>
+                    <td className="sv-metric-cell">
+                      <span className="sv-metric-val">{(statsBySlug.get(post.slug)?.views ?? 0).toLocaleString()}</span>
+                    </td>
+                    <td className="sv-metric-cell">
+                      <span className="sv-metric-val">{(statsBySlug.get(post.slug)?.uniqueVisitors ?? 0).toLocaleString()}</span>
+                    </td>
                     <td className="sl-actions">
                       <div className="sv-row-actions">
                         {post.status === "published" && (

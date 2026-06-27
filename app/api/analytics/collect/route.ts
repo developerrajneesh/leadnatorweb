@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { isAdminPath } from "@/lib/blog/admin-paths";
 import { recordPageView, updateViewDuration } from "@/lib/analytics/store";
-import { applyVisitorCookie, resolveVisitorId } from "@/lib/analytics/visitor";
+import { applyVisitorCookie, getClientIp, resolveVisitorId } from "@/lib/analytics/visitor";
+import { geoFields, getIpGeo } from "@/lib/analytics/geo";
 
 export async function POST(req: Request) {
   try {
@@ -26,6 +27,9 @@ export async function POST(req: Request) {
 
     const resolved = resolveVisitorId(req, clientVisitorId);
 
+    // Enrich with IP geolocation (cached per-IP via ipapi.co).
+    const geo = geoFields(await getIpGeo(getClientIp(req)));
+
     const viewId = await recordPageView({
       path,
       referrer: typeof body.referrer === "string" ? body.referrer : "",
@@ -37,6 +41,7 @@ export async function POST(req: Request) {
       utmCampaign: typeof body.utmCampaign === "string" ? body.utmCampaign : undefined,
       utmTerm: typeof body.utmTerm === "string" ? body.utmTerm : undefined,
       utmContent: typeof body.utmContent === "string" ? body.utmContent : undefined,
+      ...geo,
     });
 
     const res = NextResponse.json({ ok: true, viewId });

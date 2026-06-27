@@ -5,11 +5,13 @@ import Link from "next/link";
 import {
   FiAlertCircle,
   FiCheckCircle,
+  FiClock,
   FiExternalLink,
   FiLink,
   FiMail,
   FiRefreshCw,
   FiSearch,
+  FiTag,
   FiTrash2,
   FiUsers,
   FiX,
@@ -198,27 +200,40 @@ export default function StudioLeadsPage() {
           </div>
         </div>
 
-        <div className="sl-hero-stats" aria-label="Lead counts">
-          <div className="sl-stat">
+      </header>
+
+      <div className="sl-stats" aria-label="Lead counts">
+        <div className="sl-stat-card">
+          <span className="sl-stat-ic sl-stat-ic-blue"><FiUsers aria-hidden /></span>
+          <div className="sl-stat-card-body">
             <strong>{leads.length}</strong>
             <span>Total leads</span>
           </div>
-          <div className="sl-stat sl-stat-week">
+        </div>
+        <div className="sl-stat-card">
+          <span className="sl-stat-ic sl-stat-ic-green"><FiClock aria-hidden /></span>
+          <div className="sl-stat-card-body">
             <strong>{weekCount}</strong>
             <span>Last 7 days</span>
           </div>
-          <div className={`sl-stat${webhookSaved ? " sl-stat-connected" : " sl-stat-muted"}`}>
+        </div>
+        <div className="sl-stat-card">
+          <span className={`sl-stat-ic ${webhookSaved ? "sl-stat-ic-green" : "sl-stat-ic-gray"}`}><FiLink aria-hidden /></span>
+          <div className="sl-stat-card-body">
             <strong>{webhookSaved ? "On" : "Off"}</strong>
             <span>Webhook</span>
           </div>
-          {topics.length > 0 && (
-            <div className="sl-stat sl-stat-muted">
+        </div>
+        {topics.length > 0 && (
+          <div className="sl-stat-card">
+            <span className="sl-stat-ic sl-stat-ic-violet"><FiTag aria-hidden /></span>
+            <div className="sl-stat-card-body">
               <strong>{topics.length}</strong>
               <span>Topics</span>
             </div>
-          )}
-        </div>
-      </header>
+          </div>
+        )}
+      </div>
 
       {webhookSaved ? (
         <div className="sl-banner sl-banner-success">

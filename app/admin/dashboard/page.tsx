@@ -74,79 +74,128 @@ export default function StudioDashboard() {
         </div>
       </div>
 
-      <div className="studio-stats studio-stats-4 sd-home-stats">
-        <div className="studio-stat">
-          <strong>{posts.length}</strong>
-          <span>Total vlogs</span>
+      <div className="sd-stats">
+        <div className="sd-stat">
+          <span className="sd-stat-ic sd-stat-ic-blue"><FiList aria-hidden /></span>
+          <div className="sd-stat-body">
+            <strong>{posts.length}</strong>
+            <span>Total vlogs</span>
+          </div>
         </div>
-        <div className="studio-stat">
-          <strong>{published}</strong>
-          <span>Published</span>
+        <div className="sd-stat">
+          <span className="sd-stat-ic sd-stat-ic-green"><FiEye aria-hidden /></span>
+          <div className="sd-stat-body">
+            <strong>{published}</strong>
+            <span>Published</span>
+          </div>
         </div>
-        <div className="studio-stat">
-          <strong>{drafts}</strong>
-          <span>Drafts</span>
+        <div className="sd-stat">
+          <span className="sd-stat-ic sd-stat-ic-amber"><FiEdit3 aria-hidden /></span>
+          <div className="sd-stat-body">
+            <strong>{drafts}</strong>
+            <span>Drafts</span>
+          </div>
         </div>
-        <div className="studio-stat">
-          <strong>{analytics ? analytics.totalViews.toLocaleString() : "—"}</strong>
-          <span>Site views · 30d</span>
+        <div className="sd-stat">
+          <span className="sd-stat-ic sd-stat-ic-violet"><FiBarChart2 aria-hidden /></span>
+          <div className="sd-stat-body">
+            <strong>{analytics ? analytics.totalViews.toLocaleString() : "—"}</strong>
+            <span>Site views · 30d</span>
+          </div>
         </div>
       </div>
 
-      <section className="sd-home-panel sd-home-panel-wide">
-        <div className="sd-home-panel-head">
-          <div>
-            <h3>Recent vlogs</h3>
-            <p>Latest updates — edit or publish from here</p>
+      <div className="sd-grid">
+        <section className="sd-home-panel">
+          <div className="sd-home-panel-head">
+            <div>
+              <h3>Recent vlogs</h3>
+              <p>Latest updates — edit or publish from here</p>
+            </div>
+            <Link href={ADMIN_ROUTES.vlogs} className="sd-home-panel-link">View all</Link>
           </div>
-          <Link href={ADMIN_ROUTES.vlogs} className="sd-home-panel-link">View all</Link>
-        </div>
 
-        {loading ? (
-          <p className="sd-home-panel-empty">Loading vlogs…</p>
-        ) : recentPosts.length === 0 ? (
-          <div className="sd-home-panel-empty">
-            <p>No vlogs yet.</p>
-            <Link href={ADMIN_ROUTES.newPost} className="ln-btn ln-btn-primary ln-btn-sm">
-              <FiPlus aria-hidden /> Write your first vlog
-            </Link>
-          </div>
-        ) : (
-          <ul className="sd-home-recent">
-            {recentPosts.map((post) => (
-              <li key={post.id}>
-                <div className="sd-home-recent-main">
-                  <strong title={post.title}>{post.title}</strong>
-                  <span className="sd-home-recent-meta">
-                    Updated {formatDate(post.updatedAt)}
-                  </span>
-                </div>
-                <span className={`studio-status studio-status-${post.status}`}>{post.status}</span>
-                <div className="sd-home-recent-actions">
-                  {post.status === "published" && (
+          {loading ? (
+            <p className="sd-home-panel-empty">Loading vlogs…</p>
+          ) : recentPosts.length === 0 ? (
+            <div className="sd-home-panel-empty">
+              <p>No vlogs yet.</p>
+              <Link href={ADMIN_ROUTES.newPost} className="ln-btn ln-btn-primary ln-btn-sm">
+                <FiPlus aria-hidden /> Write your first vlog
+              </Link>
+            </div>
+          ) : (
+            <ul className="sd-home-recent">
+              {recentPosts.map((post) => (
+                <li key={post.id}>
+                  <div className="sd-home-recent-main">
+                    <strong title={post.title}>{post.title}</strong>
+                    <span className="sd-home-recent-meta">
+                      Updated {formatDate(post.updatedAt)}
+                    </span>
+                  </div>
+                  <span className={`studio-status studio-status-${post.status}`}>{post.status}</span>
+                  <div className="sd-home-recent-actions">
+                    {post.status === "published" && (
+                      <Link
+                        href={`/blog/${post.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="studio-icon-btn"
+                        title="View on blog"
+                      >
+                        <FiEye aria-hidden strokeWidth={2.25} />
+                      </Link>
+                    )}
                     <Link
-                      href={`/blog/${post.slug}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={ADMIN_ROUTES.editPost(post.id)}
                       className="studio-icon-btn"
-                      title="View on blog"
+                      title="Edit vlog"
                     >
-                      <FiEye aria-hidden strokeWidth={2.25} />
-                    </Link>
-                  )}
-                  <Link
-                    href={ADMIN_ROUTES.editPost(post.id)}
-                    className="studio-icon-btn"
-                    title="Edit vlog"
-                  >
                       <FiEdit3 aria-hidden strokeWidth={2.25} />
-                  </Link>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+                    </Link>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <div className="sd-side-links">
+          <Link href={ADMIN_ROUTES.vlogs} className="sd-home-link">
+            <span className="sd-dash-icon sd-dash-icon-green">
+              <FiList aria-hidden strokeWidth={2.25} />
+            </span>
+            <span className="sd-home-link-copy">
+              <strong>All vlogs</strong>
+              <span>Manage every article</span>
+            </span>
+            <FiArrowRight className="sd-home-link-arrow" aria-hidden strokeWidth={2.25} />
+          </Link>
+
+          <Link href={ADMIN_ROUTES.leads} className="sd-home-link">
+            <span className="sd-dash-icon sd-dash-icon-blue">
+              <FiUsers aria-hidden strokeWidth={2.25} />
+            </span>
+            <span className="sd-home-link-copy">
+              <strong>Your leads</strong>
+              <span>Contact form messages</span>
+            </span>
+            <FiArrowRight className="sd-home-link-arrow" aria-hidden strokeWidth={2.25} />
+          </Link>
+
+          <Link href={ADMIN_ROUTES.newPost} className="sd-home-link">
+            <span className="sd-dash-icon sd-dash-icon-violet">
+              <FiEdit3 aria-hidden strokeWidth={2.25} />
+            </span>
+            <span className="sd-home-link-copy">
+              <strong>New vlog</strong>
+              <span>Start writing an article</span>
+            </span>
+            <FiArrowRight className="sd-home-link-arrow" aria-hidden strokeWidth={2.25} />
+          </Link>
+        </div>
+      </div>
 
       <section className="sd-home-panel sd-home-panel-wide">
         <div className="sd-home-panel-head">
@@ -170,41 +219,6 @@ export default function StudioDashboard() {
           <DashboardSiteActivity analytics={analytics} />
         )}
       </section>
-
-      <div className="sd-home-links">
-        <Link href={ADMIN_ROUTES.vlogs} className="sd-home-link">
-          <span className="sd-dash-icon sd-dash-icon-green">
-            <FiList aria-hidden strokeWidth={2.25} />
-          </span>
-          <span className="sd-home-link-copy">
-            <strong>All vlogs</strong>
-            <span>Manage every article</span>
-          </span>
-          <FiArrowRight className="sd-home-link-arrow" aria-hidden strokeWidth={2.25} />
-        </Link>
-
-        <Link href={ADMIN_ROUTES.leads} className="sd-home-link">
-          <span className="sd-dash-icon sd-dash-icon-blue">
-            <FiUsers aria-hidden strokeWidth={2.25} />
-          </span>
-          <span className="sd-home-link-copy">
-            <strong>Your leads</strong>
-            <span>Contact form messages</span>
-          </span>
-          <FiArrowRight className="sd-home-link-arrow" aria-hidden strokeWidth={2.25} />
-        </Link>
-
-        <Link href={ADMIN_ROUTES.newPost} className="sd-home-link">
-          <span className="sd-dash-icon sd-dash-icon-violet">
-            <FiEdit3 aria-hidden strokeWidth={2.25} />
-          </span>
-          <span className="sd-home-link-copy">
-            <strong>New vlog</strong>
-            <span>Start writing an article</span>
-          </span>
-          <FiArrowRight className="sd-home-link-arrow" aria-hidden strokeWidth={2.25} />
-        </Link>
-      </div>
     </StudioShell>
   );
 }

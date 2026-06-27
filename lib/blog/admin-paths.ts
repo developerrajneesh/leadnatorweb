@@ -8,6 +8,7 @@ export const ADMIN_ROUTES = {
   vlogs: `${ADMIN_PREFIX}/vlogs`,
   leads: `${ADMIN_PREFIX}/leads`,
   traffic: `${ADMIN_PREFIX}/traffic`,
+  visitors: `${ADMIN_PREFIX}/visitors`,
   profile: `${ADMIN_PREFIX}/profile`,
   newPost: `${ADMIN_PREFIX}/posts/new`,
   editPost: (id: string) => `${ADMIN_PREFIX}/posts/${id}/edit`,
