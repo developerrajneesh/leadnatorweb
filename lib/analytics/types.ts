@@ -64,6 +64,8 @@ export type PlatformStat = {
 
 export type AnalyticsSummary = {
   rangeDays: number;
+  /** Inclusive last day (yyyy-mm-dd) of the range; today when omitted. */
+  rangeEnd?: string;
   totalViews: number;
   uniqueVisitors: number;
   viewsToday: number;

@@ -188,14 +188,34 @@ function emptyStat(path: string, title?: string, slug?: string): PageStat {
   };
 }
 
-export async function getAnalyticsSummary(rangeDays = 30): Promise<AnalyticsSummary> {
+export type AnalyticsRange = {
+  /** Inclusive ISO lower bound. Omit for all-time. */
+  since?: string;
+  /** Exclusive ISO upper bound. Omit for "up to now". */
+  until?: string;
+  /** Days the range spans (drives the chart). Omit to derive from the data. */
+  rangeDays?: number;
+  /** Inclusive last day (yyyy-mm-dd) for charting; defaults to today. */
+  rangeEnd?: string;
+};
+
+export async function getAnalyticsSummary(
+  range: number | AnalyticsRange = 30,
+): Promise<AnalyticsSummary> {
+  const r: AnalyticsRange =
+    typeof range === "number" ? { since: sinceIso(range), rangeDays: range } : range;
   const col = await viewsCollection();
-  const since = sinceIso(rangeDays);
   const todayStart = todayStartIso();
+
+  const createdAt: { $gte?: string; $lt?: string } = {};
+  if (r.since) createdAt.$gte = r.since;
+  if (r.until) createdAt.$lt = r.until;
+  const match: Record<string, unknown> =
+    createdAt.$gte || createdAt.$lt ? { createdAt } : {};
 
   const pageAgg = col
     .aggregate<AggRow>([
-      { $match: { createdAt: { $gte: since } } },
+      { $match: match },
       {
         $group: {
           _id: "$path",
@@ -222,12 +242,12 @@ export async function getAnalyticsSummary(rangeDays = 30): Promise<AnalyticsSumm
     pageRows,
     cmsPosts,
   ] = await Promise.all([
-    col.countDocuments({ createdAt: { $gte: since } }),
-    col.distinct("visitorId", { createdAt: { $gte: since } }),
+    col.countDocuments(match),
+    col.distinct("visitorId", match),
     col.countDocuments({ createdAt: { $gte: todayStart } }),
     col
       .aggregate<{ _id: string; views: number; visitors: string[] }>([
-        { $match: { createdAt: { $gte: since } } },
+        { $match: match },
         {
           $group: {
             _id: "$platform",
@@ -240,7 +260,7 @@ export async function getAnalyticsSummary(rangeDays = 30): Promise<AnalyticsSumm
       .toArray(),
     col
       .aggregate<{ _id: string; count: number }>([
-        { $match: { createdAt: { $gte: since } } },
+        { $match: match },
         {
           $group: {
             _id: { $substr: ["$createdAt", 0, 10] },
@@ -251,13 +271,13 @@ export async function getAnalyticsSummary(rangeDays = 30): Promise<AnalyticsSumm
       ])
       .toArray(),
     col
-      .find({ createdAt: { $gte: since } })
+      .find(match)
       .project({ referrer: 1, platform: 1, utmSource: 1, utmMedium: 1, utmCampaign: 1 })
       .limit(5000)
       .toArray(),
     col
       .aggregate<{ total: number; timed: number }>([
-        { $match: { createdAt: { $gte: since } } },
+        { $match: match },
         {
           $group: {
             _id: null,
@@ -345,8 +365,21 @@ export async function getAnalyticsSummary(rangeDays = 30): Promise<AnalyticsSumm
   const totalDurationSec = dur?.total ?? 0;
   const avgDurationSec = dur?.timed ? Math.round(totalDurationSec / dur.timed) : 0;
 
+  // For all-time ranges derive the chart span from the earliest data point
+  // (capped so a years-old site can't produce a multi-thousand-point chart).
+  let rangeDays = r.rangeDays ?? 0;
+  if (!rangeDays) {
+    const endDay = r.rangeEnd ?? todayStart.slice(0, 10);
+    const firstDay = dayRows[0]?._id;
+    rangeDays = firstDay
+      ? Math.round((Date.parse(`${endDay}T00:00:00Z`) - Date.parse(`${firstDay}T00:00:00Z`)) / 86400000) + 1
+      : 1;
+    rangeDays = Math.min(1095, Math.max(1, rangeDays));
+  }
+
   return {
     rangeDays,
+    rangeEnd: r.rangeEnd,
     totalViews,
     uniqueVisitors: uniqueVisitors.length,
     viewsToday,

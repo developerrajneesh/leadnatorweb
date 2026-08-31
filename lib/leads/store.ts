@@ -62,6 +62,13 @@ export async function deleteContactLead(id: string): Promise<boolean> {
   return result.deletedCount === 1;
 }
 
+export async function deleteContactLeads(ids: string[]): Promise<number> {
+  if (ids.length === 0) return 0;
+  const col = await leadsCollection();
+  const result = await col.deleteMany({ id: { $in: ids } });
+  return result.deletedCount ?? 0;
+}
+
 const LEAD_STATUSES: LeadStatus[] = ["new", "contacted", "closed"];
 
 export async function updateContactLead(

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createPartnerApplication } from "@/lib/partners/store";
 import { checkContactSubmission, logBlocked } from "@/lib/security/abuse-guard";
+import { isRateLimited } from "@/lib/security/rate-limit";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -13,6 +14,13 @@ function isValidPhone(phone: string): boolean {
 
 export async function POST(req: Request) {
   try {
+    if (await isRateLimited(req, "partners_apply", { max: 5, windowMs: 60 * 60 * 1000 })) {
+      return NextResponse.json(
+        { error: "Too many submissions from this network. Please try again later." },
+        { status: 429 },
+      );
+    }
+
     const body = await req.json();
     const name = typeof body.name === "string" ? body.name.trim() : "";
     const phone = typeof body.phone === "string" ? body.phone.trim() : "";

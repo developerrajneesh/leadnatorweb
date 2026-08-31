@@ -78,10 +78,10 @@ function niceMax(value: number) {
 }
 
 /** Fill every day in the selected range (zeros for quiet days). */
-export function buildDaySeries(data: DayPoint[], rangeDays: number): DayPoint[] {
+export function buildDaySeries(data: DayPoint[], rangeDays: number, rangeEnd?: string): DayPoint[] {
   const map = new Map(data.map((d) => [d.date, d.count]));
   const out: DayPoint[] = [];
-  const end = new Date();
+  const end = rangeEnd ? new Date(`${rangeEnd}T00:00:00Z`) : new Date();
   end.setUTCHours(0, 0, 0, 0);
 
   for (let i = rangeDays - 1; i >= 0; i--) {
@@ -96,11 +96,13 @@ export function buildDaySeries(data: DayPoint[], rangeDays: number): DayPoint[] 
 export default function TrafficAreaChart({
   data,
   rangeDays = 30,
+  rangeEnd,
   compact = false,
   hideSummary = false,
 }: {
   data: DayPoint[];
   rangeDays?: number;
+  rangeEnd?: string;
   compact?: boolean;
   hideSummary?: boolean;
 }) {
@@ -108,7 +110,7 @@ export default function TrafficAreaChart({
   const uid = useId().replace(/:/g, "");
   const size = compact ? COMPACT_SIZE : DEFAULT_SIZE;
 
-  const series = useMemo(() => buildDaySeries(data, rangeDays), [data, rangeDays]);
+  const series = useMemo(() => buildDaySeries(data, rangeDays, rangeEnd), [data, rangeDays, rangeEnd]);
 
   const chart = useMemo(() => {
     if (!series.length) return null;

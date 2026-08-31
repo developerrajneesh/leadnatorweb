@@ -45,11 +45,20 @@ function platformIcon(name: string): string {
   return name.slice(0, 2).toUpperCase() || "•";
 }
 
-const PERIOD_OPTIONS = [
-  { value: 7, label: "7 days" },
-  { value: 30, label: "30 days" },
-  { value: 90, label: "90 days" },
-] as const;
+type Period = "today" | "7" | "30" | "90" | "all" | "custom";
+
+const PERIOD_OPTIONS: { value: Period; label: string }[] = [
+  { value: "today", label: "Today" },
+  { value: "7", label: "7 days" },
+  { value: "30", label: "30 days" },
+  { value: "90", label: "90 days" },
+  { value: "all", label: "All time" },
+  { value: "custom", label: "Custom" },
+];
+
+function todayInputValue(): string {
+  return new Date().toISOString().slice(0, 10);
+}
 
 const METRICS: {
   key: keyof AnalyticsSummary;
@@ -143,17 +152,48 @@ function PageStatsTable({
 }
 
 export default function StudioAnalytics({ fullPage = false }: { fullPage?: boolean }) {
-  const [days, setDays] = useState(30);
+  const [period, setPeriod] = useState<Period>("30");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+  // The custom range actually in effect — set when the user hits Apply.
+  const [appliedCustom, setAppliedCustom] = useState<{ from: string; to: string } | null>(null);
   const [data, setData] = useState<AnalyticsSummary | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Custom mode waits for an applied range before fetching anything.
+    if (period === "custom" && !appliedCustom) return;
+
+    const query =
+      period === "custom" && appliedCustom
+        ? `range=custom&from=${appliedCustom.from}&to=${appliedCustom.to}`
+        : `range=${period}`;
+
     setLoading(true);
-    fetch(`/api/studio/analytics?days=${days}`)
+    fetch(`/api/studio/analytics?${query}`)
       .then((r) => (r.ok ? r.json() : null))
       .then(setData)
       .finally(() => setLoading(false));
-  }, [days]);
+  }, [period, appliedCustom]);
+
+  const customValid =
+    Boolean(customFrom && customTo) && customFrom <= customTo && customTo <= todayInputValue();
+
+  function selectPeriod(value: Period) {
+    setPeriod(value);
+    if (value === "custom" && !customFrom && !customTo) {
+      // Seed the pickers with the last 14 days so Apply is one click away.
+      const to = todayInputValue();
+      const from = new Date(Date.now() - 13 * 86400000).toISOString().slice(0, 10);
+      setCustomFrom(from);
+      setCustomTo(to);
+    }
+  }
+
+  function applyCustom(e: React.FormEvent) {
+    e.preventDefault();
+    if (customValid) setAppliedCustom({ from: customFrom, to: customTo });
+  }
 
   const topSource = data?.byPlatform[0];
   const daySeries = data?.byDay ?? [];
@@ -186,14 +226,42 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
                   <button
                     key={value}
                     type="button"
-                    className={`sa-period-btn${days === value ? " active" : ""}`}
-                    onClick={() => setDays(value)}
-                    aria-pressed={days === value}
+                    className={`sa-period-btn${period === value ? " active" : ""}`}
+                    onClick={() => selectPeriod(value)}
+                    aria-pressed={period === value}
                   >
                     {label}
                   </button>
                 ))}
               </div>
+              {period === "custom" && (
+                <form className="sa-custom" onSubmit={applyCustom} aria-label="Custom date range">
+                  <label className="sa-custom-field">
+                    <span>From</span>
+                    <input
+                      type="date"
+                      value={customFrom}
+                      max={customTo || todayInputValue()}
+                      onChange={(e) => setCustomFrom(e.target.value)}
+                      required
+                    />
+                  </label>
+                  <label className="sa-custom-field">
+                    <span>To</span>
+                    <input
+                      type="date"
+                      value={customTo}
+                      min={customFrom || undefined}
+                      max={todayInputValue()}
+                      onChange={(e) => setCustomTo(e.target.value)}
+                      required
+                    />
+                  </label>
+                  <button type="submit" className="sa-custom-apply" disabled={!customValid}>
+                    Apply
+                  </button>
+                </form>
+              )}
             </div>
             {!fullPage && (
               <Link href={ADMIN_ROUTES.traffic} className="sa-hero-link">
@@ -260,7 +328,7 @@ export default function StudioAnalytics({ fullPage = false }: { fullPage?: boole
                     <p>Watch your daily visits grow — great for spotting busy days and new campaigns</p>
                   </div>
                 </div>
-                <TrafficAreaChart data={daySeries} rangeDays={days} />
+                <TrafficAreaChart data={daySeries} rangeDays={data.rangeDays} rangeEnd={data.rangeEnd} />
               </div>
 
               <div className="sa-grid sa-grid-charts">

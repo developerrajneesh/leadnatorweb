@@ -56,12 +56,17 @@ export default function StudioLeadsPage() {
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [topic, setTopic] = useState("all");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkBusy, setBulkBusy] = useState(false);
 
   const loadLeads = useCallback(() => {
     setLoading(true);
     fetch("/api/studio/leads")
       .then((r) => (r.ok ? r.json() : []))
-      .then(setLeads)
+      .then((data: ContactLead[]) => {
+        setLeads(data);
+        setSelected(new Set());
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -141,7 +146,57 @@ export default function StudioLeadsPage() {
     const res = await fetch(`/api/studio/leads/${id}`, { method: "DELETE" });
     if (res.ok) {
       setLeads((prev) => prev.filter((l) => l.id !== id));
+      setSelected((prev) => {
+        if (!prev.has(id)) return prev;
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
       if (expandedId === id) setExpandedId(null);
+    }
+  }
+
+  function toggleSelect(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  const allFilteredSelected =
+    filtered.length > 0 && filtered.every((l) => selected.has(l.id));
+  const someFilteredSelected = filtered.some((l) => selected.has(l.id));
+
+  function toggleSelectAll() {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (allFilteredSelected) filtered.forEach((l) => next.delete(l.id));
+      else filtered.forEach((l) => next.add(l.id));
+      return next;
+    });
+  }
+
+  async function removeSelected() {
+    const ids = Array.from(selected);
+    if (ids.length === 0) return;
+    const label = ids.length === 1 ? "1 selected lead" : `${ids.length} selected leads`;
+    if (!confirm(`Delete ${label}? This can't be undone.`)) return;
+    setBulkBusy(true);
+    try {
+      const res = await fetch("/api/studio/leads", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      if (res.ok) {
+        setLeads((prev) => prev.filter((l) => !selected.has(l.id)));
+        if (expandedId && selected.has(expandedId)) setExpandedId(null);
+        setSelected(new Set());
+      }
+    } finally {
+      setBulkBusy(false);
     }
   }
 
@@ -346,9 +401,46 @@ export default function StudioLeadsPage() {
         </div>
       ) : (
         <div className="sl-table-wrap">
+          {selected.size > 0 && (
+            <div className="sl-bulkbar" role="status">
+              <span className="sl-bulkbar-count">
+                <strong>{selected.size}</strong> selected
+              </span>
+              <div className="sl-bulkbar-actions">
+                <button
+                  type="button"
+                  className="ln-btn ln-btn-ghost ln-btn-sm"
+                  onClick={() => setSelected(new Set())}
+                  disabled={bulkBusy}
+                >
+                  Clear selection
+                </button>
+                <button
+                  type="button"
+                  className="ln-btn ln-btn-sm sl-bulk-delete"
+                  onClick={removeSelected}
+                  disabled={bulkBusy}
+                >
+                  <FiTrash2 aria-hidden strokeWidth={2.25} />
+                  {bulkBusy ? "Deleting…" : "Delete selected"}
+                </button>
+              </div>
+            </div>
+          )}
           <table className="sl-table">
             <thead>
               <tr>
+                <th className="sl-check">
+                  <input
+                    type="checkbox"
+                    checked={allFilteredSelected}
+                    ref={(el) => {
+                      if (el) el.indeterminate = someFilteredSelected && !allFilteredSelected;
+                    }}
+                    onChange={toggleSelectAll}
+                    aria-label="Select all visible leads"
+                  />
+                </th>
                 <th>When</th>
                 <th>Contact</th>
                 <th>Company</th>
@@ -361,8 +453,17 @@ export default function StudioLeadsPage() {
               {filtered.map((lead) => {
                 const expanded = expandedId === lead.id;
                 const longMessage = lead.message.length > 100;
+                const isSelected = selected.has(lead.id);
                 return (
-                  <tr key={lead.id}>
+                  <tr key={lead.id} className={isSelected ? "sl-row-selected" : undefined}>
+                    <td className="sl-check">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => toggleSelect(lead.id)}
+                        aria-label={`Select message from ${lead.name}`}
+                      />
+                    </td>
                     <td className="sl-date">
                       <time dateTime={lead.createdAt} title={formatDate(lead.createdAt)}>
                         {formatDay(lead.createdAt)}

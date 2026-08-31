@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createContactLead, dispatchLeadsWebhook } from "@/lib/leads/store";
 import { checkContactSubmission, logBlocked } from "@/lib/security/abuse-guard";
+import { isRateLimited } from "@/lib/security/rate-limit";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -8,6 +9,15 @@ function isValidEmail(email: string): boolean {
 
 export async function POST(req: Request) {
   try {
+    // Same idea as the app's signup limiter: public forms get their own tight
+    // per-IP cap on top of the content/Tor checks below.
+    if (await isRateLimited(req, "contact", { max: 5, windowMs: 60 * 60 * 1000 })) {
+      return NextResponse.json(
+        { error: "Too many submissions from this network. Please try again later." },
+        { status: 429 },
+      );
+    }
+
     const body = await req.json();
     const name = typeof body.name === "string" ? body.name.trim() : "";
     const email = typeof body.email === "string" ? body.email.trim() : "";
