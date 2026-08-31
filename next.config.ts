@@ -21,6 +21,9 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ["image/avif", "image/webp"],
+    // Next 16 rejects any `quality` prop that isn't listed here. 95 is for the
+    // hero illustration, where the default 75 left visible softening.
+    qualities: [75, 95],
     remotePatterns: [
       // Any Supabase project (storage public URLs)
       {

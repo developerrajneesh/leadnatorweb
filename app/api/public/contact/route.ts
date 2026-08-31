@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createContactLead, dispatchLeadsWebhook } from "@/lib/leads/store";
+import { checkContactSubmission, logBlocked } from "@/lib/security/abuse-guard";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -19,6 +20,19 @@ export async function POST(req: Request) {
     }
     if (!isValidEmail(email)) {
       return NextResponse.json({ error: "That email doesn't look right — please double-check it." }, { status: 400 });
+    }
+
+    // Abuse guard: Tor exit relays, honeypot, and the bot-signature content
+    // patterns. Answers with the normal success shape so a bot can't tell it
+    // was filtered and start probing for what tripped it.
+    const verdict = await checkContactSubmission(req, {
+      name, company, message,
+      website: typeof body.website === "string" ? body.website : "",
+    });
+    if (verdict.blocked) {
+      console.warn(`[contact] blocked ${email} from ${verdict.ip} — ${verdict.reason}`);
+      await logBlocked(verdict, { name, email, message }, req);
+      return NextResponse.json({ ok: true });
     }
 
     const lead = await createContactLead({ name, email, company, interest, message });

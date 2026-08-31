@@ -170,6 +170,18 @@ function Form() {
           </div>
         ) : (
           <form className="ln-form" onSubmit={submit}>
+            {/* Honeypot — invisible and off the tab order, so only an automated
+                form-filler ever puts anything in it. Server drops those. */}
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={form.website || ""}
+              onChange={(e) => setForm({ ...form, website: e.target.value })}
+              style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+            />
             <div className="ln-form-row">
               <label>
                 <span>Full name *</span>

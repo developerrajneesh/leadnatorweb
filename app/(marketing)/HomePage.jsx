@@ -1,18 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import {
   FiArrowRight, FiCheck, FiMessageCircle, FiMail, FiTarget, FiZap,
   FiBarChart2, FiLayers, FiUsers, FiCpu, FiTool, FiCalendar,
-  FiFolder, FiPhone, FiCreditCard, FiShoppingBag, FiSend, FiLink,
-  FiChevronDown, FiPieChart, FiLifeBuoy, FiTrendingUp,
+  FiFolder, FiPhone, FiSend, FiLink,
+  FiChevronDown, FiLifeBuoy, FiTrendingUp, FiStar, FiShield, FiPlay,
 } from "react-icons/fi";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { SiMeta } from "react-icons/si";
 import MarketingArt from "./_sections/MarketingArt";
 import IntegrationsHub from "./_sections/IntegrationsHub";
 import AIShowcase from "./_sections/AIShowcase";
+import PlatformShowcase from "./_sections/PlatformShowcase";
+import SeoIntro from "./_sections/SeoIntro";
+import ProductPreview from "./_sections/ProductPreview";
+import WhyLeadnator from "./_sections/WhyLeadnator";
+import TrustProof from "./_sections/TrustProof";
 import HierarchyFlow from "./_sections/HierarchyFlow";
 import { MarketingLink, SignupLink } from "@/components/site/AppLinks";
 
@@ -20,11 +24,13 @@ export default function HomePage({ onGoto }) {
 
   return (
     <>
-<Hero onGoto={onGoto} />
+      <Hero onGoto={onGoto} />
+      <TrustProof />
       <LogosStrip />
-      <ModuleGrid onGoto={onGoto} />
+      <SeoIntro />
+      <PlatformShowcase />
       <ProductPreview />
-      <WhyUs />
+      <WhyLeadnator />
       <AiSection onGoto={onGoto} />
       <HierarchyFlow />
       <IntegrationsHub />
@@ -34,58 +40,129 @@ export default function HomePage({ onGoto }) {
   );
 }
 
+/* ---------------- PROOF BAND ----------------
+   The three proof points used to sit inside the hero copy, where they competed
+   with the CTAs for the same corner of the page. On their own full-width band
+   they get room to breathe and act as the hand-off into the page. */
+function ProofBand() {
+  const items = [
+    {
+      Icon: FiUsers,
+      tone: "green",
+      body: (
+        <>
+          <strong className="ln-proof-value">5,000+</strong>{" "}
+          <span className="ln-proof-label">businesses across 20+ countries</span>
+        </>
+      ),
+    },
+    {
+      Icon: FiStar,
+      tone: "amber",
+      body: (
+        <>
+          <strong className="ln-proof-value">4.9 / 5</strong>{" "}
+          <span className="ln-proof-label">average rating</span>
+          <span className="ln-proof-stars">{"★".repeat(5)}</span>
+        </>
+      ),
+    },
+    {
+      Icon: FiZap,
+      tone: "violet",
+      body: (
+        <>
+          <span className="ln-proof-label">Live in </span>
+          <strong className="ln-proof-value">12 minutes</strong>{" "}
+          <span className="ln-proof-label">no engineering needed</span>
+        </>
+      ),
+    },
+  ];
+  return (
+    <div className="ln-proof-bar">
+      {items.map(({ Icon, tone, body }, i) => (
+        <div key={i} className="ln-proof-item">
+          <span className={`ln-proof-icon ${tone}`}><Icon /></span>
+          <div className="ln-proof-copy">{body}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ---------------- HERO ---------------- */
+const HERO_CHANNELS = [
+  { key: "wa",   Icon: FaWhatsapp,  name: "WhatsApp",  note: "Business API" },
+  { key: "ig",   Icon: FaInstagram, name: "Instagram", note: "DMs & Comments" },
+  { key: "meta", Icon: SiMeta,      name: "Meta Ads",  note: "Lead Ads" },
+  { key: "mail", Icon: FiMail,      name: "Email",     note: "Campaigns" },
+];
+
 function Hero({ onGoto }) {
   return (
     <section className="ln-hero">
       <div className="ln-hero-grain" />
-      <div className="ln-container ln-hero-grid">
-        <div className="ln-hero-copy">
+      <div className="ln-container">
+        <div className="ln-hero-grid">
+          <div className="ln-hero-copy">
           <span className="ln-hero-pill">
-            <FaWhatsapp style={{ color: "#22c55e" }} /> Meta Business Partner · AI-Powered CRM
+            <FiShield className="ln-hero-pill-icon" />
+            <span className="ln-hero-pill-brand">Meta Business Partner</span>
+            <span className="ln-hero-pill-sep">•</span>
+            <span className="ln-hero-pill-rest">AI-Powered CRM</span>
           </span>
-          <h1>
-            One CRM for <span className="ln-hero-hl">WhatsApp, Meta Ads &amp; Email</span> —
-            wired together with <span className="ln-hero-hl alt">AI automation</span>.
+
+          {/* The channels moved out of this sentence and into the strip below.
+              Naming four products mid-headline forced every one of them to be
+              styled, which is what kept turning the line into confetti. */}
+          <h1 className="ln-hero-title">
+            Every lead, chat and campaign —{" "}
+            <span className="ln-hero-accent">in one AI-powered CRM.</span>
           </h1>
+
           <p className="ln-hero-sub">
-            Leadnator unifies your entire growth stack: WhatsApp Business API, Meta Lead
-            Ads, Email campaigns, CRM pipeline, 20+ AI tools, file storage and booking
-            calendar — all on one login. Launch in 12 minutes, no engineering needed.
+            Leadnator brings your whole growth stack under one login: WhatsApp Business
+            API, Instagram DMs and comments, Meta Lead Ads, email campaigns, a full CRM
+            pipeline, 20+ AI tools, file storage and a booking calendar. Set it up in
+            12 minutes — no developers, no separate subscriptions.
           </p>
 
+          {/* Every channel gets equal billing here, where there's room to say
+              what each one actually connects to. */}
+          <div className="ln-hero-channels">
+            {HERO_CHANNELS.map(({ key, Icon, name, note }) => (
+              <div key={key} className="ln-hero-channel">
+                <span className={`ln-hero-channel-icon ${key}`}><Icon /></span>
+                <div>
+                  <strong>{name}</strong>
+                  <span>{note}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
           <div className="ln-hero-cta">
-            <SignupLink className="ln-btn ln-btn-primary ln-btn-lg">
+            <SignupLink className="ln-btn ln-btn-lg ln-btn-hero">
               Start FREE Trial <FiArrowRight />
             </SignupLink>
             <MarketingLink href="/features" className="ln-btn ln-btn-outline ln-btn-lg">
-              <FiPieChart /> See all features
+              <FiPlay /> See all features
             </MarketingLink>
           </div>
 
-          <ul className="ln-hero-check">
+          <ul className="ln-hero-meta">
             <li><FiCheck /> 2-day free trial</li>
             <li><FiCheck /> No credit card required</li>
             <li><FiCheck /> Zero-fee WhatsApp setup</li>
             <li><FiCheck /> Cancel anytime</li>
           </ul>
-
-          <div className="ln-hero-trust">
-            <div className="ln-hero-avatars">
-              {["a","b","c","d","e"].map((x, i) => (
-                <span key={x} className="ln-hero-avatar" style={{ background: `hsl(${140 + i * 30} 70% 55%)` }}>{x.toUpperCase()}</span>
-              ))}
-            </div>
-            <div>
-              <strong>50,000+ businesses</strong> across 20+ countries
-              <div className="ln-hero-stars">
-                {"★".repeat(5)} <span>4.9 / 5 average rating</span>
-              </div>
-            </div>
           </div>
+
+          <MarketingArt />
         </div>
 
-        <MarketingArt />
+        <ProofBand />
       </div>
     </section>
   );
@@ -136,163 +213,41 @@ function PhoneMock() {
 function Bubble({ side, children }) { return <div className={`ln-bubble ${side}`}>{children}</div>; }
 
 /* ---------------- LOGOS ---------------- */
+const LOGO_BRANDS = [
+  "Acme Retail", "Kira Labs", "Nova Capital", "Finchly", "Looma",
+  "Zenith BPO", "Blueprint", "OneMore", "Veda Foods", "Urban Crate",
+  "Spark Commerce", "Helix Health", "Crown Realty", "Swift Logistics",
+  "Pixel Mart", "Bloom Skincare", "Craft Studio", "Delta Finance",
+  "Everest Edu", "Arjun Textiles", "Nimbus SaaS", "Orbit Media",
+];
+
 function LogosStrip() {
-  const LOGOS = ["Acme Retail", "Kira Labs", "Nova Capital", "Finchly", "Looma", "Zenith BPO", "Blueprint", "OneMore"];
+  const track = [...LOGO_BRANDS, ...LOGO_BRANDS];
+
   return (
-    <section className="ln-logos">
+    <section className="ln-logos" aria-label="Trusted by growing teams">
       <div className="ln-container">
         <p className="ln-logos-sub">Trusted by fast-growing teams across 20+ countries</p>
-        <div className="ln-logos-row">
-          {LOGOS.map((n) => <span key={n} className="ln-logo-chip">{n}</span>)}
-        </div>
       </div>
-    </section>
-  );
-}
-
-/* ---------------- MODULES (the full product surface) ---------------- */
-function ModuleGrid({ onGoto }) {
-  const MODULES = [
-    {
-      key: "whatsapp", color: "#22c55e", Icon: FaWhatsapp,
-      title: "WhatsApp Cloud API",
-      blurb: "Broadcasts, templates, live inbox, drag-drop chatbot, Click-to-WhatsApp ads, catalog + payments.",
-      bullets: ["Unlimited broadcasting", "AI chatbot builder", "Multi-agent inbox"],
-    },
-    {
-      key: "meta", color: "#1877f2", Icon: SiMeta,
-      title: "Meta Ads Manager",
-      blurb: "Create, run and analyze Facebook & Instagram campaigns with native Meta Marketing API integration.",
-      bullets: ["Campaign creator wizard", "Lead form sync", "Real-time ad analytics"],
-    },
-    {
-      key: "email", color: "#ea4335", Icon: FiMail,
-      title: "Email Marketing",
-      blurb: "Bring-your-own SMTP. Drip automations, templates, subscribers, delivery analytics, signature designer.",
-      bullets: ["Own SMTP — zero markup", "Drip + trigger flows", "Open / click tracking"],
-    },
-    {
-      key: "crm", color: "#7c3aed", Icon: FiUsers,
-      title: "Leads CRM",
-      blurb: "Kanban pipeline, hot/qualified stages, CSV import, source attribution, tags, automations.",
-      bullets: ["Pipeline (Kanban)", "Lead scoring & tags", "Auto-capture from WhatsApp + Meta"],
-    },
-    {
-      key: "ai", color: "#f59e0b", Icon: FiCpu,
-      title: "AI Studio",
-      blurb: "20+ AI tools — ad copy, email writer, rewriter, translator, lead scorer, hashtags and more.",
-      bullets: ["Powered by GPT-4", "One-click content", "Multi-language"],
-    },
-    {
-      key: "dash", color: "#0ea5e9", Icon: FiBarChart2,
-      title: "Dashboard & Analytics",
-      blurb: "Real-time overview, funnel, source attribution, revenue-by-source, reports and CSV exports.",
-      bullets: ["Live metrics", "CSV exports", "Revenue attribution"],
-    },
-    {
-      key: "storage", color: "#facc15", Icon: FiFolder,
-      title: "File Storage",
-      blurb: "Your own S3 / R2 / Wasabi / Supabase bucket. Upload, share, versioning and per-user quota.",
-      bullets: ["Any S3-compatible bucket", "Shared links", "Version history"],
-    },
-    {
-      key: "calendar", color: "#4285f4", Icon: FiCalendar,
-      title: "Calendar & Booking",
-      blurb: "Month/week/agenda views, availability rules, and public booking links for sales calls.",
-      bullets: ["Team availability", "Public booking links", "WhatsApp reminders"],
-    },
-    {
-      key: "tools", color: "#f97316", Icon: FiTool,
-      title: "Growth Tools",
-      blurb: "Form builder, invoice generator, UTM builder, link shortener, QR code, email validator, A/B calc.",
-      bullets: ["20+ free tools", "Brand-safe outputs", "Export-ready"],
-    },
-    {
-      key: "support", color: "#ef4444", Icon: FiLifeBuoy,
-      title: "In-app Support",
-      blurb: "Ticket threads, live chat with the team, FAQs and documentation — no external helpdesk needed.",
-      bullets: ["Ticket + live chat", "Socket-powered real-time", "Admin-authored FAQ"],
-    },
-    {
-      key: "integrations", color: "#06b6d4", Icon: FiLink,
-      title: "Integrations",
-      blurb: "Shopify, WooCommerce, Razorpay, Google Sheets, Zapier, webhooks and 25+ native connectors.",
-      bullets: ["25+ native apps", "Zapier / Make", "REST APIs + webhooks"],
-    },
-    {
-      key: "automation", color: "#ec4899", Icon: FiZap,
-      title: "Visual Automations",
-      blurb: "Trigger-based flows across every module. Branch, wait, call APIs, send messages — all no-code.",
-      bullets: ["Drag-drop builder", "Cross-module triggers", "Webhooks + conditionals"],
-    },
-  ];
-
-  return (
-    <section id="modules" className="ln-section">
-      <div className="ln-container">
-        <SectionHead
-          eyebrow="Everything in one platform"
-          title="A complete growth stack — not just WhatsApp"
-          sub="Most CRMs force you to duct-tape seven tools together. Leadnator ships ten products behind one login, each plugged into the next."
-        />
-        <div className="ln-mods">
-          {MODULES.map(({ key, color, Icon, title, blurb, bullets }) => (
-            <article key={key} className="ln-mod-card">
-              <div className="ln-mod-ic" style={{ background: `${color}15`, color }}><Icon /></div>
-              <h3>{title}</h3>
-              <p>{blurb}</p>
-              <ul>
-                {bullets.map((b) => <li key={b}><FiCheck /> {b}</li>)}
-              </ul>
-              <MarketingLink href={`/features#${key}`} className="ln-mod-link">
-                Learn more <FiArrowRight />
-              </MarketingLink>
-            </article>
+      <div className="ln-logos-marquee" aria-hidden>
+        <div className="ln-logos-track">
+          {track.map((name, i) => (
+            <span key={`${name}-${i}`} className="ln-logo-chip">{name}</span>
           ))}
         </div>
       </div>
+      <span className="ln-sr-only">{LOGO_BRANDS.join(", ")}</span>
     </section>
   );
 }
 
-/* ---------------- PRODUCT PREVIEW (hero_dashboard.png) ---------------- */
-function ProductPreview() {
-  return (
-    <section className="ln-preview">
-      <div className="ln-container">
-        <SectionHead
-          eyebrow="Product preview"
-          title="See your entire growth stack on one screen"
-          sub="Leads, WhatsApp chats, Meta ads, email performance and storage usage — unified in a dashboard your whole team can live in."
-        />
-        <div className="ln-preview-frame">
-          <div className="ln-preview-chrome">
-            <span className="ln-preview-dot r" />
-            <span className="ln-preview-dot y" />
-            <span className="ln-preview-dot g" />
-            <span className="ln-preview-url">app.leadnator.com/dashboard</span>
-          </div>
-          <Image
-            src="/hero_dashboard.png"
-            alt="Leadnator dashboard showing WhatsApp, Meta Ads and Email analytics on a single screen"
-            className="ln-preview-img"
-            width={1200}
-            height={675}
-            priority
-            sizes="(max-width: 768px) 100vw, 1100px"
-          />
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ---------------- STATS ---------------- */
 function Stats() {
   return (
     <section className="ln-stats">
       <div className="ln-container ln-stats-grid">
-        <Stat value="50,000+" label="Businesses trust us" />
+        <Stat value="5,000+" label="Businesses trust us" />
         <Stat value="2.4B+"   label="Messages delivered" />
         <Stat value="20+"     label="Countries supported" />
         <Stat value="98.7%"   label="Deliverability rate" />
@@ -309,35 +264,7 @@ function Stat({ value, label }) {
   );
 }
 
-/* ---------------- WHY US ---------------- */
-function WhyUs() {
-  const REASONS = [
-    { Icon: FiZap,        title: "Launch in 12 minutes", text: "Embedded Signup handles Meta's approval. Your number, your template, your ads — all wired in the first coffee." },
-    { Icon: FiCreditCard, title: "Zero markup pricing",  text: "Meta bills you at cost. We don't take a cut on every template send. Your WhatsApp wallet is yours." },
-    { Icon: FiShoppingBag,title: "Own your data",        text: "Leads sit in your DB. Files live in your S3 bucket. Templates on your WABA. You can export and leave any day." },
-    { Icon: FiPhone,      title: "Real support",         text: "Open tickets or live-chat the team from inside the app. Replies in minutes during business hours, not days." },
-  ];
-  return (
-    <section className="ln-section ln-section-tint">
-      <div className="ln-container">
-        <SectionHead
-          eyebrow="Why Leadnator"
-          title="Built by operators, for operators"
-          sub="Every feature is because we hit the pain ourselves running growth for D2C brands."
-        />
-        <div className="ln-feat-grid">
-          {REASONS.map(({ Icon, title, text }) => (
-            <div key={title} className="ln-feat">
-              <div className="ln-feat-ic"><Icon /></div>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+/* ---------------- WHY US — see _sections/WhyLeadnator.jsx ---------------- */
 
 /* ---------------- AI ---------------- */
 function AiSection({ onGoto }) {

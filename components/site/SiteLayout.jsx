@@ -5,8 +5,27 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FiArrowRight, FiPhone, FiChevronDown } from "react-icons/fi";
 import { FaWhatsapp, FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa";
+import { SiMeta } from "react-icons/si";
 import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/app-url";
+import { FEATURE_NAV_ITEMS, PARTNER_NAV_ITEMS } from "@/lib/nav-menus";
+import { shouldOpenPartnerFormFromHref, signalPartnerApplyForm } from "@/lib/partners/form-nav";
 import PageViewTracker from "@/components/analytics/PageViewTracker";
+
+function BrandMark({ light = false, size = "large" }) {
+  return (
+    <span className={`ln-brand ${light ? "ln-brand-light" : ""}`}>
+      <span className="ln-brand-row">
+        <span className="ln-brand-lead">Lead</span>
+        <span className="ln-brand-nator">nator</span>
+      </span>
+      <span className="ln-brand-tag" style={{ fontSize: size === "small" ? "6px" : "7px" }}>
+        <span className="ln-brand-tag-line"  aria-hidden />
+        AI-POWERED GROWTH PLATFORM
+        <span className="ln-brand-tag-line" aria-hidden />
+      </span>
+    </span>
+  );
+}
 
 export default function SiteLayout({ children }) {
   const currentPath = usePathname() || "";
@@ -40,41 +59,129 @@ function Topbar() {
   );
 }
 
+function NavDropdown({ label, items, wide, active, onNavigate }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      className={`ln-nav-drop${open ? " open" : ""}`}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        className={`ln-nav-drop-trigger${active ? " active" : ""}`}
+        aria-expanded={open}
+        aria-haspopup="true"
+        onClick={() => setOpen((v) => !v)}
+      >
+        {label}
+        <FiChevronDown className="ln-nav-drop-chevron" aria-hidden />
+      </button>
+      <div className={`ln-nav-drop-panel${wide ? " ln-nav-drop-panel--wide" : ""}`}>
+        {items.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            className="ln-nav-drop-link"
+            onClick={() => {
+              setOpen(false);
+              onNavigate?.();
+              if (shouldOpenPartnerFormFromHref(item.href)) {
+                signalPartnerApplyForm();
+              }
+            }}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Nav({ currentPath }) {
   const [open, setOpen] = useState(false);
-  const LINKS = [
-    { to: "/",         label: "Home" },
-    { to: "/features", label: "Features" },
-    { to: "/pricing",  label: "Pricing" },
-    { to: "/blog",     label: "Blog" },
-    { to: "/partners", label: "Partners" },
-    { to: "/compare",  label: "Compare" },
-    { to: "/api-docs", label: "Developer API" },
-    { to: "/contact",  label: "Contact" },
-  ];
+
+  const isFeaturesActive =
+    currentPath === "/features" || currentPath.startsWith("/features/");
+  const isPartnersActive =
+    currentPath === "/partners" || currentPath.startsWith("/partners/");
+
+  const closeMenu = () => setOpen(false);
+
   return (
     <header className="ln-nav">
       <div className="ln-container ln-nav-inner">
-        <Link href="/" className="ln-brand" onClick={() => setOpen(false)}>
-          <span className="ln-brand-lead">Lead</span><span className="ln-brand-nator">nator</span>
+        <Link href="/" className="ln-brand-link" onClick={closeMenu}>
+          <BrandMark size="small" />
         </Link>
 
         <nav className={`ln-links ${open ? "open" : ""}`} aria-label="Main navigation">
-          {LINKS.map((l) => (
-            <Link
-              key={l.to}
-              href={l.to}
-              className={
-                currentPath === l.to
-                || (l.to === "/blog" && currentPath.startsWith("/blog"))
-                  ? "active"
-                  : ""
-              }
-              onClick={() => setOpen(false)}
-            >
-              {l.label}
-            </Link>
-          ))}
+          <Link
+            href="/"
+            className={currentPath === "/" ? "active" : ""}
+            onClick={closeMenu}
+          >
+            Home
+          </Link>
+
+          <NavDropdown
+            label="Features"
+            items={FEATURE_NAV_ITEMS}
+            wide
+            active={isFeaturesActive}
+            onNavigate={closeMenu}
+          />
+
+          <Link
+            href="/pricing"
+            className={currentPath === "/pricing" ? "active" : ""}
+            onClick={closeMenu}
+          >
+            Pricing
+          </Link>
+
+          <Link
+            href="/blog"
+            className={
+              currentPath === "/blog" || currentPath.startsWith("/blog/") ? "active" : ""
+            }
+            onClick={closeMenu}
+          >
+            Blog
+          </Link>
+
+          <NavDropdown
+            label="Partners"
+            items={PARTNER_NAV_ITEMS}
+            active={isPartnersActive}
+            onNavigate={closeMenu}
+          />
+
+          <Link
+            href="/compare"
+            className={currentPath === "/compare" ? "active" : ""}
+            onClick={closeMenu}
+          >
+            Compare
+          </Link>
+
+          <Link
+            href="/api-docs"
+            className={currentPath === "/api-docs" ? "active" : ""}
+            onClick={closeMenu}
+          >
+            Developer API
+          </Link>
+
+          <Link
+            href="/contact"
+            className={currentPath === "/contact" ? "active" : ""}
+            onClick={closeMenu}
+          >
+            Contact
+          </Link>
         </nav>
 
         <div className="ln-nav-cta">
@@ -94,13 +201,25 @@ function Nav({ currentPath }) {
   );
 }
 
+function MetaBusinessPartnerBadge() {
+  return (
+    <div className="ln-footer-meta-partner" aria-label="Meta Business Partner">
+      <div className="ln-footer-meta-partner-top">
+        <SiMeta className="ln-footer-meta-logo" aria-hidden />
+        <span className="ln-footer-meta-word">Meta</span>
+      </div>
+      <p className="ln-footer-meta-partner-sub">Business Partner</p>
+    </div>
+  );
+}
+
 function Footer() {
   return (
     <footer className="ln-footer">
       <nav className="ln-container ln-footer-grid" aria-label="Site links">
         <div className="ln-footer-brand">
-          <Link href="/" className="ln-brand ln-brand-light">
-            <span className="ln-brand-lead">Lead</span><span className="ln-brand-nator">nator</span>
+          <Link href="/" className="ln-brand-link">
+            <BrandMark light />
           </Link>
           <p className="ln-footer-mission">
             The all-in-one AI growth platform — WhatsApp Cloud API, Meta Ads, Email
@@ -114,10 +233,10 @@ function Footer() {
             <a href="https://wa.me/917888341096" aria-label="WhatsApp"><FaWhatsapp /></a>
           </div>
           <div className="ln-footer-badges">
-            <span>🏆 Meta Business Partner</span>
             <span>✨ Featured in The Indian Express</span>
             <span>🔐 SOC-2 ready infrastructure</span>
           </div>
+          <MetaBusinessPartnerBadge />
         </div>
 
         <div className="ln-footer-links">

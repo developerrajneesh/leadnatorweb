@@ -3636,6 +3636,26 @@
   display: inline-flex;
   margin-left: 4px;
 }
+.sl-status-select {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--ln-line);
+  background: #fff;
+  color: var(--ln-ink);
+  cursor: pointer;
+  max-width: 120px;
+}
+.ln-partner-modal {
+  width: min(640px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.ln-partner-form-done {
+  padding: 8px 0 4px;
+  text-align: center;
+}
 .sl-modal-backdrop {
   position: fixed;
   inset: 0;

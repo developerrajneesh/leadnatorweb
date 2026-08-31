@@ -21,6 +21,7 @@ function headerSubtitle(pathname: string | null): string {
   if (pathname === ADMIN_ROUTES.dashboard) return "Quick overview — vlogs, traffic and leads";
   if (pathname.startsWith(ADMIN_ROUTES.traffic)) return "See who's visiting your site and where they come from";
   if (pathname.startsWith(ADMIN_ROUTES.leads)) return "Contact form messages — reply, export or forward to your CRM";
+  if (pathname.startsWith(ADMIN_ROUTES.partners)) return "Partnership applications from the Become a Partner form";
   if (pathname.startsWith(ADMIN_ROUTES.profile)) return "Your photo and name on every blog post";
   if (pathname.startsWith(ADMIN_ROUTES.vlogs)) return "Your full content library — search, filter, preview and edit";
   if (pathname.includes("/posts/new")) return "Start writing — your next article begins here";
@@ -67,6 +68,7 @@ export default function StudioShell({
     if (href === ADMIN_ROUTES.traffic) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.traffic);
     if (href === ADMIN_ROUTES.visitors) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.visitors);
     if (href === ADMIN_ROUTES.leads) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.leads);
+    if (href === ADMIN_ROUTES.partners) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.partners);
     if (href === ADMIN_ROUTES.profile) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.profile);
     if (href === ADMIN_ROUTES.newPost) return pathname?.includes("/posts/new");
     if (href === ADMIN_ROUTES.vlogs) return pathname === href || pathname?.startsWith(ADMIN_ROUTES.vlogs);
@@ -120,6 +122,9 @@ export default function StudioShell({
             </Link>
             <Link href={ADMIN_ROUTES.leads} className={isActive(ADMIN_ROUTES.leads) ? "active" : ""}>
               <FiUsers aria-hidden /> Your leads
+            </Link>
+            <Link href={ADMIN_ROUTES.partners} className={isActive(ADMIN_ROUTES.partners) ? "active" : ""}>
+              <FiUsers aria-hidden /> Partner applications
             </Link>
           </nav>
 

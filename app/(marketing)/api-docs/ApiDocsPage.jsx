@@ -133,7 +133,7 @@ const MODULES = [
         method: "GET", path: "/api/wa/account-info", auth: true,
         desc: "Rich WABA + phone-number info fetched from Meta Graph (tiered so permission gaps don't blank the whole payload). Cached on your connection doc.",
         response: {
-          phone: { display_phone_number: "+91 95196 90019", verified_name: "Acme Inc.", quality_rating: "GREEN", messaging_limit_tier: "TIER_250", platform_type: "CLOUD_API" },
+          phone: { display_phone_number: "+91 00000 00000", verified_name: "Acme Inc.", quality_rating: "GREEN", messaging_limit_tier: "TIER_250", platform_type: "CLOUD_API" },
           waba:  { name: "Acme", currency: "INR", timezone_id: "71", business_verification_status: "verified", message_template_namespace: "b19a…" },
           phoneNumbers: [/* … all numbers linked to this WABA … */],
           warnings: [],
