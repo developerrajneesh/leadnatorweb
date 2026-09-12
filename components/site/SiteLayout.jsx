@@ -236,7 +236,12 @@ function Footer() {
             <span>✨ Featured in The Indian Express</span>
             <span>🔐 SOC-2 ready infrastructure</span>
           </div>
-          <MetaBusinessPartnerBadge />
+          {/* Credential badges — one aligned row: Meta partner + registrations */}
+          <div className="ln-footer-partner-row">
+            <MetaBusinessPartnerBadge />
+            <img src="/image.png" alt="D-U-N-S Registered" className="ln-footer-partner-img" loading="lazy" />
+            <img src="/image2.png" alt="MSME registered — Government of India" className="ln-footer-partner-img" loading="lazy" />
+          </div>
         </div>
 
         <div className="ln-footer-links">
