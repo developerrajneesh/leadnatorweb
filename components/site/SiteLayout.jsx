@@ -226,11 +226,11 @@ function Footer() {
             Marketing, Leads CRM, File Storage, Calendar and 20+ AI tools on one login.
           </p>
           <div className="ln-footer-social">
-            <a href="#" aria-label="Facebook"><FaFacebook /></a>
-            <a href="#" aria-label="Instagram"><FaInstagram /></a>
-            <a href="#" aria-label="YouTube"><FaYoutube /></a>
+            <a href="https://www.facebook.com/profile.php?id=61588978750821" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebook /></a>
+            <a href="https://www.instagram.com/leadnator.official/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><FaInstagram /></a>
+            <a href="https://www.youtube.com/@Leadnator" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a>
             <a href="#" aria-label="LinkedIn"><FaLinkedin /></a>
-            <a href="https://wa.me/917888341096" aria-label="WhatsApp"><FaWhatsapp /></a>
+            <a href="https://wa.me/917888341096" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><FaWhatsapp /></a>
           </div>
           <div className="ln-footer-badges">
             <span>✨ Featured in The Indian Express</span>
@@ -266,7 +266,7 @@ function Footer() {
               { label: "API Reference", to: "/api-docs" },
               { label: "FAQ",           to: "/faq" },
               { label: "Blog",          to: "/blog" },
-              { label: "Sitemap",       to: "/site-map" },
+              { label: "Privacy Policy", to: "/privacy-policy" },
               { label: "Partners",      to: "/partners" },
               { label: "Support",       to: "/contact" },
             ]}
@@ -280,7 +280,6 @@ function Footer() {
               { label: "Contact Us",                to: "/contact" },
               { label: "Sign in",                   href: APP_LOGIN_URL, external: true },
               { label: "Sign up",                   href: APP_SIGNUP_URL, external: true },
-              { label: "Privacy Policy",            to: "/privacy-policy" },
               { label: "Terms & Conditions",        to: "/terms" },
               { label: "Refund & Cancellation",     to: "/refund-policy" },
             ]}
