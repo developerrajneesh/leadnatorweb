@@ -79,7 +79,7 @@ export default function RefundPolicyPage() {
       <LegalSection title="7. How to cancel or request a refund">
         <ol>
           <li>Sign in to Leadnator → Settings → Billing → Cancel plan, or</li>
-          <li>Email <a href="mailto:billing@leadnator.com">billing@leadnator.com</a> with your registered email and invoice ID, or</li>
+          <li>Email <a href="mailto:team@leadnator.com">team@leadnator.com</a> with your registered email and invoice ID, or</li>
           <li>Message us on WhatsApp at +91 7888341096.</li>
         </ol>
         <p>
@@ -103,7 +103,7 @@ export default function RefundPolicyPage() {
         </p>
         <p>
           Questions? Visit <LegalLink href="/contact">Contact Us</LegalLink> or email{" "}
-          <a href="mailto:billing@leadnator.com">billing@leadnator.com</a>.
+          <a href="mailto:team@leadnator.com">team@leadnator.com</a>.
         </p>
       </LegalSection>
     </LegalDocument>

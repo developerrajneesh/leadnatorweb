@@ -19,6 +19,7 @@ import WhyLeadnator from "./_sections/WhyLeadnator";
 import TrustProof from "./_sections/TrustProof";
 import HierarchyFlow from "./_sections/HierarchyFlow";
 import { MarketingLink, SignupLink } from "@/components/site/AppLinks";
+import PlayStoreBadge from "@/components/site/PlayStoreBadge";
 
 export default function HomePage({ onGoto }) {
 
@@ -124,7 +125,7 @@ function Hero({ onGoto }) {
           <p className="ln-hero-sub">
             Leadnator brings your whole growth stack under one login: WhatsApp Business
             API, Instagram DMs and comments, Meta Lead Ads, email campaigns, a full CRM
-            pipeline, 20+ AI tools, file storage and a booking calendar. Set it up in
+            pipeline, AI voice agents, VoIP calling, 20+ AI tools, file storage and a booking calendar. Set it up in
             12 minutes — no developers, no separate subscriptions.
           </p>
 
@@ -149,6 +150,7 @@ function Hero({ onGoto }) {
             <MarketingLink href="/features" className="ln-btn ln-btn-outline ln-btn-lg">
               <FiPlay /> See all features
             </MarketingLink>
+            <PlayStoreBadge />
           </div>
 
           <ul className="ln-hero-meta">
@@ -394,7 +396,7 @@ function PricingPreview({ onGoto }) {
 /* ---------------- FAQ PREVIEW ---------------- */
 function FaqPreview({ onGoto }) {
   const F = [
-    { q: "What does Leadnator do?",                          a: "Leadnator is an all-in-one growth CRM that ships WhatsApp Cloud API, Meta Ads, Email marketing, lead pipeline, AI Studio, file storage and booking calendar behind one login." },
+    { q: "What does Leadnator do?",                          a: "Leadnator is an all-in-one growth CRM that ships WhatsApp Cloud API, Meta Ads, Email marketing, lead pipeline, AI Studio, AI voice agents, VoIP calling, file storage and booking calendar behind one login." },
     { q: "Do I need a Meta developer account?",              a: "No. Our Embedded Signup creates your WhatsApp Business Account, registers your number and issues a permanent token in one popup." },
     { q: "Can I bring my own SMTP and S3 bucket?",           a: "Yes — Email uses your SMTP (SES, Gmail, SendGrid). Files live in your S3/R2/Supabase bucket. We never host your data by default." },
     { q: "Is there a free plan?",                            a: "Yes. Starter is free forever for up to 500 leads. No card required to sign up." },

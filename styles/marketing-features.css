@@ -430,6 +430,172 @@
    PER-MODULE VISUAL EXTRAS
    ========================================================== */
 
+/* ai voice — dark agent console with a speaking orb */
+.lnf-vx-stage { padding: 26px 18px; }
+.lnf-vx {
+  position: relative; width: 100%; max-width: 400px;
+  padding: 18px 18px 20px; border-radius: 26px; overflow: hidden;
+  color: #e2e8f0;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(139, 92, 246, .38), transparent 60%),
+    radial-gradient(90% 60% at 100% 100%, rgba(34, 211, 238, .18), transparent 60%),
+    linear-gradient(160deg, #150f2e 0%, #0b0a1a 100%);
+  border: 1px solid rgba(167, 139, 250, .25);
+  box-shadow: 0 40px 80px -40px rgba(76, 29, 149, .75), inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+.lnf-vx::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px);
+  background-size: 14px 14px;
+  mask-image: linear-gradient(180deg, #000, transparent 70%);
+}
+.lnf-vx-top { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.lnf-vx-agent { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; color: #c4b5fd; }
+.lnf-vx-agent-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: conic-gradient(from 0deg, #8b5cf6, #22d3ee, #ec4899, #8b5cf6);
+  animation: lnf-vx-spin 4s linear infinite;
+}
+.lnf-vx-live {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 800; letter-spacing: .06em; color: #fecaca;
+  background: rgba(239, 68, 68, .14); border: 1px solid rgba(239, 68, 68, .35);
+}
+.lnf-vx-live i { width: 7px; height: 7px; border-radius: 50%; background: #ef4444; animation: lnf-blink 1s steps(2) infinite; }
+
+.lnf-vx-orbwrap { position: relative; height: 176px; display: grid; place-items: center; margin: 6px 0 4px; }
+.lnf-vx-orb {
+  position: relative; z-index: 2;
+  width: 92px; height: 92px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 26px; color: #fff;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, .55), transparent 35%),
+    conic-gradient(from 0deg, #7c3aed, #22d3ee, #ec4899, #7c3aed);
+  box-shadow: 0 0 40px rgba(139, 92, 246, .75), 0 0 90px rgba(34, 211, 238, .3);
+  animation: lnf-vx-breathe 1.6s ease-in-out infinite;
+}
+.lnf-vx-orb svg { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .4)); }
+.lnf-vx-ring {
+  position: absolute; width: 92px; height: 92px; border-radius: 50%;
+  border: 1.5px solid rgba(167, 139, 250, .6);
+  animation: lnf-vx-ripple 2.7s ease-out infinite;
+}
+.lnf-vx-ring.r2 { animation-delay: .9s; border-color: rgba(34, 211, 238, .55); }
+.lnf-vx-ring.r3 { animation-delay: 1.8s; border-color: rgba(236, 72, 153, .5); }
+.lnf-vx-lang {
+  position: absolute; z-index: 3;
+  padding: 4px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700; color: #e9d5ff;
+  background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .14);
+  backdrop-filter: blur(6px);
+  animation: lnf-bob 4s ease-in-out infinite;
+}
+.lnf-vx-lang.l1 { left: 4%; top: 22%; }
+.lnf-vx-lang.l2 { right: 3%; top: 38%; animation-delay: 1.2s; }
+.lnf-vx-lang.l3 { left: 12%; bottom: 8%; animation-delay: 2.1s; }
+
+.lnf-vx-caption {
+  position: relative; margin: 0 auto 16px; max-width: 300px;
+  text-align: center; font-size: 15px; font-weight: 600; line-height: 1.45;
+}
+.lnf-vx-caption span { color: rgba(226, 232, 240, .3); animation: lnf-vx-word 3.6s ease-in-out infinite; }
+
+.lnf-vx-steps {
+  position: relative; list-style: none; margin: 0; padding: 12px 10px 0;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+}
+.lnf-vx-steps li {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  font-size: 10.5px; font-weight: 700; color: #64748b;
+}
+.lnf-vx-steps li + li::before {
+  content: ""; position: absolute; top: 9px; right: 50%; width: 100%; height: 2px;
+  background: rgba(255, 255, 255, .1);
+}
+.lnf-vx-steps li.done + li::before { background: linear-gradient(90deg, #8b5cf6, #22d3ee); }
+.lnf-vx-step-dot {
+  position: relative; z-index: 1;
+  width: 20px; height: 20px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 11px; color: #fff;
+  background: #1e1b3a; border: 2px solid rgba(255, 255, 255, .15);
+}
+.lnf-vx-steps li.done { color: #c4b5fd; }
+.lnf-vx-steps li.done .lnf-vx-step-dot { background: #8b5cf6; border-color: #8b5cf6; }
+.lnf-vx-steps li.live { color: #67e8f9; }
+.lnf-vx-steps li.live .lnf-vx-step-dot { border-color: #22d3ee; box-shadow: 0 0 0 4px rgba(34, 211, 238, .18); }
+.lnf-vx-steps li.live .lnf-vx-step-dot::after {
+  content: ""; width: 8px; height: 8px; border-radius: 50%; background: #22d3ee;
+  animation: lnf-pulse 1.8s ease-out infinite;
+}
+
+.lnf-vx-card {
+  position: absolute; z-index: 4;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px 10px 10px; border-radius: 16px;
+  background: rgba(255, 255, 255, .94); backdrop-filter: blur(10px);
+  border: 1px solid #ede9fe;
+  box-shadow: 0 20px 44px -22px rgba(76, 29, 149, .55);
+  animation: lnf-bob 4.5s ease-in-out infinite;
+}
+.lnf-vx-card strong { display: block; font-size: 12.5px; color: var(--ln-ink); }
+.lnf-vx-card small { display: block; font-size: 10.5px; color: var(--ln-muted); margin-top: 1px; }
+.lnf-vx-card-score { top: 0; right: 0; }
+.lnf-vx-card-book { bottom: 2px; left: 0; animation-delay: 1.5s; }
+.lnf-vx-card-ic {
+  width: 32px; height: 32px; border-radius: 10px;
+  display: grid; place-items: center; font-size: 15px; color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #22d3ee);
+}
+.lnf-vx-gauge {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: conic-gradient(#f97316 calc(var(--v) * 1%), #fde7d6 0);
+}
+.lnf-vx-gauge b {
+  width: 28px; height: 28px; border-radius: 50%; background: #fff;
+  display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #ea580c;
+}
+
+@keyframes lnf-vx-spin { to { transform: rotate(360deg); } }
+@keyframes lnf-vx-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
+}
+@keyframes lnf-vx-ripple {
+  from { transform: scale(1); opacity: .9; }
+  to { transform: scale(2.3); opacity: 0; }
+}
+@keyframes lnf-vx-word {
+  0%, 8% { color: rgba(226, 232, 240, .3); }
+  18%, 80% { color: #fff; }
+  100% { color: rgba(226, 232, 240, .3); }
+}
+@media (max-width: 520px) {
+  .lnf-vx-stage { padding: 30px 0; }
+  .lnf-vx-card-score { right: -4px; top: -6px; }
+  .lnf-vx-card-book { left: -4px; bottom: -6px; }
+}
+
+/* voip calling — active call bar + call-log icons */
+.lnf-oncall {
+  display: grid; grid-template-columns: 24px 1fr auto;
+  align-items: center; gap: 10px;
+  padding: 10px 12px; margin-bottom: 4px;
+  border-radius: 12px; background: color-mix(in srgb, var(--mx) 10%, white);
+}
+.lnf-oncall .lnf-row-s { display: flex; align-items: center; gap: 6px; }
+.lnf-hangup {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: #ef4444; color: #fff; font-size: 13px;
+  transform: rotate(135deg);
+}
+.lnf-row-ic svg { font-size: 13px; }
+.lnf-row-meta svg { color: #22c55e; font-size: 14px; }
+
 /* whatsapp — reuses global .ln-phone*; this just fits it */
 .lnf-phone-fit {
   transform: scale(.82); transform-origin: top center;

@@ -144,7 +144,7 @@ export default function TermsPage() {
       <LegalSection title="12. Contact">
         <p>
           Questions about these Terms? Reach us at{" "}
-          <a href="mailto:legal@leadnator.com">legal@leadnator.com</a> or{" "}
+          <a href="mailto:team@leadnator.com">team@leadnator.com</a> or{" "}
           <LegalLink href="/contact">Contact Us</LegalLink>.
         </p>
       </LegalSection>

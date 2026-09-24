@@ -5,6 +5,7 @@ import { SiMeta } from "react-icons/si";
 const TAGS = [
   "WhatsApp Marketing", "Meta Ads", "Instagram Automation",
   "Leads CRM", "Email Marketing", "Booking Calendar", "AI Studio",
+  "AI Voice Agents", "VoIP Calling",
 ];
 
 const BLOCKS = [

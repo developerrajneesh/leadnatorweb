@@ -4,6 +4,7 @@ const STATIC_PAGE_LABELS: Record<string, string> = {
   "/contact": "Contact Us",
   "/pricing": "Pricing",
   "/features": "Features",
+  "/leadnator-voice": "Leadnator Voice",
   "/about": "About Us",
   "/partners": "Partners",
   "/compare": "Compare Plans",
@@ -12,7 +13,6 @@ const STATIC_PAGE_LABELS: Record<string, string> = {
   "/privacy-policy": "Privacy Policy",
   "/terms": "Terms of Service",
   "/refund-policy": "Refund Policy",
-  "/site-map": "Site Map",
 };
 
 export function humanizeSlug(slug: string): string {

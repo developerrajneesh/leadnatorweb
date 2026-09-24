@@ -3,7 +3,7 @@
 import Image from "next/image";
 import {
   FiArrowRight, FiMail, FiZap, FiBarChart2, FiUsers, FiCpu,
-  FiTool, FiCalendar, FiFolder, FiLifeBuoy, FiLink, FiStar,
+  FiTool, FiCalendar, FiFolder, FiLifeBuoy, FiLink, FiStar, FiMic, FiPhone,
 } from "react-icons/fi";
 import { FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { SiMeta } from "react-icons/si";
@@ -41,6 +41,16 @@ const MODULES = [
     blurb: "20+ AI tools — ad copy, email writer, rewriter, translator, lead scorer, hashtags and more.",
   },
   {
+    key: "voice", color: "#8b5cf6", Icon: FiMic,
+    title: "AI Voice Agents",
+    blurb: "AI agents that answer calls, call new leads, qualify them and book meetings — 24/7, in multiple languages.",
+  },
+  {
+    key: "calling", color: "#14b8a6", Icon: FiPhone,
+    title: "VoIP Calling",
+    blurb: "Click-to-call from the CRM or app. Call recording, IVR, virtual numbers and auto call logs on every lead.",
+  },
+  {
     key: "storage", color: "#eab308", Icon: FiFolder,
     title: "File Storage",
     blurb: "Your own S3 / R2 / Wasabi / Supabase bucket. Upload, share, versioning and per-user quota.",
@@ -72,7 +82,7 @@ const MODULES = [
   },
 ];
 
-const SIDE_ROWS = 6;
+const SIDE_ROWS = 7;
 
 const ORBIT_ICONS = [
   { cls: "o1", Icon: FaWhatsapp, color: "#22c55e" },

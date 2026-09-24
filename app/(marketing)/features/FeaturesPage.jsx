@@ -6,6 +6,7 @@ import {
   FiLayers, FiBarChart2, FiFolder, FiCalendar, FiTool, FiLifeBuoy,
   FiLink, FiZap, FiSend, FiTarget, FiShoppingBag, FiCreditCard,
   FiClock, FiPhone, FiFileText, FiInbox, FiPlus, FiTrendingUp, FiLock, FiStar,
+  FiMic, FiPhoneCall, FiPhoneForwarded, FiGlobe, FiVolume2, FiHeadphones,
 } from "react-icons/fi";
 import { FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { SiMeta } from "react-icons/si";
@@ -100,6 +101,34 @@ const MODULES = [
       { Icon: FiLink,         title: "AI Translator",            text: "40+ languages with brand-voice preservation. One-click translation across campaigns." },
       { Icon: FiTrendingUp,   title: "AI Lead scorer",           text: "Rank leads 0–100 on conversion likelihood. Trainable on your closed-deal data." },
       { Icon: FiTool,         title: "Generators galore",        text: "Hashtag generator, form generator, invoice generator, UTM builder, QR code, slug, OG tag preview." },
+    ],
+  },
+  {
+    id: "voice", Icon: FiMic, color: "#8b5cf6", short: "AI Voice",
+    eyebrow: "AI Voice Agents",
+    title: "AI voice agents that call, qualify and book — 24/7",
+    sub: "Human-sounding AI agents answer inbound calls and make outbound follow-ups in English, Hindi and more. Every call lands in your CRM with a transcript.",
+    features: [
+      { Icon: FiPhoneCall,    title: "Inbound AI receptionist",  text: "Answer every call instantly — FAQs, pricing, lead qualification — even at 2 AM and on holidays." },
+      { Icon: FiPhoneForwarded, title: "Outbound AI calling",    text: "Auto-call new Meta and website leads within seconds. Follow up, qualify and re-engage cold leads at scale." },
+      { Icon: FiCalendar,     title: "Books meetings on the call", text: "The agent checks your calendar availability and confirms the slot live — no back-and-forth." },
+      { Icon: FiGlobe,        title: "Multilingual voices",      text: "Natural voices in English, Hindi, Hinglish and more regional languages, with your brand's script and tone." },
+      { Icon: FiFileText,     title: "Transcripts & summaries",  text: "Every call recorded, transcribed and summarized by AI — with lead score and next steps saved to the CRM." },
+      { Icon: FiUsers,        title: "Warm handoff to humans",   text: "Hot lead or tricky question? The AI transfers the call to the right team member instantly." },
+    ],
+  },
+  {
+    id: "calling", Icon: FiPhone, color: "#14b8a6", short: "VoIP Calling",
+    eyebrow: "VoIP Calling",
+    title: "Cloud calling built into your CRM",
+    sub: "Call leads straight from the browser or the mobile app. Every call is logged, recorded and tied to the lead record — no separate dialer needed.",
+    features: [
+      { Icon: FiPhoneCall,    title: "Click-to-call dialer",     text: "Call any lead from the CRM, inbox or pipeline in one click — from your browser or the Leadnator app." },
+      { Icon: FiHeadphones,   title: "Call recording",           text: "Record calls automatically for training, quality checks and dispute resolution." },
+      { Icon: FiClock,        title: "Automatic call logs",      text: "Duration, outcome, notes and recordings saved to the lead timeline — zero manual entry." },
+      { Icon: FiUsers,        title: "Team routing & IVR",       text: "Business numbers with IVR menus, round-robin routing and missed-call follow-ups for your whole team." },
+      { Icon: FiVolume2,      title: "Virtual business numbers", text: "Get local virtual numbers or connect your own telephony provider like Twilio, Exotel or Plivo." },
+      { Icon: FiBarChart2,    title: "Calling analytics",        text: "Calls made, connect rate, talk time and conversions per agent — see who's closing and who needs coaching." },
     ],
   },
   {
@@ -265,7 +294,7 @@ function Hero() {
             </h1>
             <p>
               Leadnator replaces WhatsApp tools, email platforms, ad managers, CRMs,
-              storage, and calendar apps — all under one login, one bill, one team.
+              AI voice agents, VoIP dialers, storage and calendar apps — all under one login, one bill, one team.
             </p>
             <div className="lnf-hero-cta">
               <SignupLink className="ln-btn ln-btn-primary ln-btn-lg">

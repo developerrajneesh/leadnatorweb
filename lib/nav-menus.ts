@@ -12,6 +12,8 @@ export const FEATURE_NAV_ITEMS: NavDropdownItem[] = [
   { label: "Leads CRM", href: "/features#crm" },
   { label: "Calendar & Booking", href: "/features#calendar" },
   { label: "AI Studio", href: "/features#ai" },
+  { label: "AI Voice Agents", href: "/features#voice" },
+  { label: "VoIP Calling", href: "/features#calling" },
   { label: "Dashboard & Analytics", href: "/features#dashboard" },
   { label: "File Storage", href: "/features#storage" },
   { label: "Growth Tools", href: "/features#tools" },

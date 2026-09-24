@@ -50,7 +50,7 @@ function ContactGrid() {
     {
       Icon: FiMail, title: "Email us",
       text: "Product questions, security documentation, partnership proposals — our inbox is open.",
-      cta: "sales@leadnator.com", href: "mailto:sales@leadnator.com",
+      cta: "team@leadnator.com", href: "mailto:team@leadnator.com",
       color: "#ea4335",
     },
     {
@@ -242,7 +242,7 @@ function CompaniesCta({ onGoto }) {
             </ul>
           </div>
           <div className="ln-cta-actions">
-            <a className="ln-btn ln-btn-primary ln-btn-lg ln-btn-block" href="mailto:enterprise@leadnator.com">
+            <a className="ln-btn ln-btn-primary ln-btn-lg ln-btn-block" href="mailto:team@leadnator.com">
               <FiBriefcase /> Email Enterprise team
             </a>
             <button className="ln-btn ln-btn-outline-dark ln-btn-lg ln-btn-block" onClick={() => onGoto("/pricing")}>

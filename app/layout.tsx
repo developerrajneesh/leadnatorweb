@@ -8,6 +8,7 @@ import "@/styles/marketing-why.css";
 import "@/styles/marketing-trust.css";
 import "@/styles/marketing-partners.css";
 import "@/styles/marketing-features.css";
+import "@/styles/marketing-voice.css";
 import "@/styles/blog.css";
 import "./globals.css";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, THEME_COLOR } from "@/lib/marketing-seo";

@@ -205,6 +205,12 @@ a.ln-btn-outline { color: var(--ln-green-700); }
 .ln-links { display: flex; align-items: center; gap: 28px; font-size: 14px; color: var(--ln-sub); font-weight: 500; }
 .ln-links a:hover { color: var(--ln-green-600); }
 .ln-links a.active { color: var(--ln-green-700); font-weight: 700; }
+.ln-links a.ln-nav-voice { display: inline-flex; align-items: center; gap: 6px; }
+.ln-nav-new {
+  padding: 2px 6px; border-radius: 999px;
+  font-size: 9px; font-weight: 800; letter-spacing: .06em; line-height: 1.3; color: #fff;
+  background: linear-gradient(90deg, #7c3aed, #06b6d4);
+}
 
 /* Nav dropdowns */
 .ln-nav-drop {
@@ -489,6 +495,23 @@ a.ln-btn-hero { color: #fff; }
 }
 .ln-hero-cta .ln-btn-outline:hover { background: #f8fafc; border-color: #cbd5e1; }
 .ln-hero-cta .ln-btn-outline svg { color: var(--ln-ink); font-size: 13px; }
+
+/* ---------- Google Play badge (hero + footer) ---------- */
+.ln-play-badge {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 54px; padding: 8px 20px 8px 16px;
+  background: #0b0f19; color: #fff; text-decoration: none;
+  border: 1px solid #3c4043; border-radius: 12px;
+  box-shadow: 0 10px 24px -14px rgba(15, 23, 42, .9);
+  transition: transform .18s ease, background .18s ease;
+}
+a.ln-play-badge { color: #fff; }
+.ln-play-badge:hover { background: #1f2937; transform: translateY(-1px); }
+.ln-play-badge-icon { width: 24px; height: 26px; flex-shrink: 0; }
+.ln-play-badge-text { display: flex; flex-direction: column; line-height: 1.1; text-align: left; }
+.ln-play-badge-text small { font-size: 10px; letter-spacing: .06em; opacity: .85; }
+.ln-play-badge-text strong { font-size: 18px; font-weight: 600; }
+.ln-play-badge-footer { margin: 20px 0 14px; min-height: 48px; border-color: rgba(255,255,255,.25); }
 
 /* ---------- Reassurance row ----------
    Four identical green ticks read as one grey blur; four hues make the row
@@ -1227,6 +1250,8 @@ a.ln-btn-hero { color: #fff; }
   flex-wrap: wrap; gap: 10px 16px;
 }
 .ln-footer-regions { font-weight: 600; color: #94a3b8; }
+.ln-footer-maker a { font-weight: 700; color: #cbd5e1; text-decoration: none; border-bottom: 1px dashed rgba(203, 213, 225, .4); transition: color .15s, border-color .15s; }
+.ln-footer-maker a:hover { color: var(--ln-green-500); border-color: var(--ln-green-500); }
 
 @media (max-width: 1100px) {
   .ln-footer .ln-footer-grid {
@@ -1329,7 +1354,7 @@ a.ln-btn-hero { color: #fff; }
 
 @media (max-width: 480px) {
   .ln-footer-bottom { align-items: center; text-align: center; }
-  .ln-footer-regions { text-align: center; width: 100%; }
+  .ln-footer-regions, .ln-footer-maker { text-align: center; width: 100%; }
 }
 
 /* ---------- FLOATING WHATSAPP ---------- */
@@ -1419,7 +1444,7 @@ a.ln-btn-hero { color: #fff; }
   .ln-section, .ln-ai { padding: 60px 0; }
   .ln-hero           { padding: 36px 0 28px; }
   .ln-hero-cta       { width: 100%; }
-  .ln-hero-cta .ln-btn { flex: 1 1 auto; min-width: 0; }
+  .ln-hero-cta .ln-btn, .ln-hero-cta .ln-play-badge { flex: 1 1 auto; min-width: 0; }
   .ln-head           { margin-bottom: 36px; }
   .ln-hub-head       { margin-bottom: 36px; }
   .ln-hub-head h2    { font-size: clamp(22px, 5.5vw, 32px); }
@@ -1446,7 +1471,7 @@ a.ln-btn-hero { color: #fff; }
   }
   .ln-hero-sub { font-size: 15px; }
   .ln-hero-cta { flex-direction: column; align-items: stretch; }
-  .ln-hero-cta .ln-btn { width: 100%; white-space: normal; }
+  .ln-hero-cta .ln-btn, .ln-hero-cta .ln-play-badge { width: 100%; white-space: normal; }
   .ln-hero-meta { flex-direction: column; align-items: flex-start; gap: 8px; }
   .ln-hero-channels { grid-template-columns: repeat(2, 1fr); gap: 4px 0; padding: 10px 4px; }
   .ln-hero-channel { padding: 8px 12px; }

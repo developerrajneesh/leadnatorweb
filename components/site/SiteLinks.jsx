@@ -27,9 +27,6 @@ export default function SiteLinks() {
               </li>
             ))}
           </ul>
-          <Link href="/site-map" className="ln-sitelinks-more">
-            View full sitemap →
-          </Link>
         </div>
       </div>
     </section>

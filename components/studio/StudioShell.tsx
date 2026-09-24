@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  FiBarChart2, FiGrid, FiList, FiLogIn, FiLogOut, FiMapPin, FiPlus, FiUser, FiUsers,
+  FiBarChart2, FiCalendar, FiGrid, FiList, FiLogIn, FiLogOut, FiMapPin, FiPlus, FiUser, FiUsers,
 } from "react-icons/fi";
 import { ADMIN_ROUTES } from "@/lib/blog/admin-paths";
 import { ADMIN_NAV } from "@/lib/blog/nav";
@@ -22,6 +22,7 @@ function headerSubtitle(pathname: string | null): string {
   if (pathname.startsWith(ADMIN_ROUTES.traffic)) return "See who's visiting your site and where they come from";
   if (pathname.startsWith(ADMIN_ROUTES.leads)) return "Contact form messages — reply, export or forward to your CRM";
   if (pathname.startsWith(ADMIN_ROUTES.partners)) return "Partnership applications from the Become a Partner form";
+  if (pathname.startsWith(ADMIN_ROUTES.demos)) return "Demo requests from the Leadnator Voice page";
   if (pathname.startsWith(ADMIN_ROUTES.profile)) return "Your photo and name on every blog post";
   if (pathname.startsWith(ADMIN_ROUTES.vlogs)) return "Your full content library — search, filter, preview and edit";
   if (pathname.includes("/posts/new")) return "Start writing — your next article begins here";
@@ -125,6 +126,9 @@ export default function StudioShell({
             </Link>
             <Link href={ADMIN_ROUTES.partners} className={isActive(ADMIN_ROUTES.partners) ? "active" : ""}>
               <FiUsers aria-hidden /> Partner applications
+            </Link>
+            <Link href={ADMIN_ROUTES.demos} className={isActive(ADMIN_ROUTES.demos) ? "active" : ""}>
+              <FiCalendar aria-hidden /> Demo bookings
             </Link>
           </nav>
 

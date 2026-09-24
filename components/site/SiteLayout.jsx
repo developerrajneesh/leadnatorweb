@@ -3,13 +3,14 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FiArrowRight, FiPhone, FiChevronDown } from "react-icons/fi";
+import { FiArrowRight, FiPhone, FiChevronDown, FiMail } from "react-icons/fi";
 import { FaWhatsapp, FaFacebook, FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa";
 import { SiMeta } from "react-icons/si";
 import { APP_LOGIN_URL, APP_SIGNUP_URL } from "@/lib/app-url";
 import { FEATURE_NAV_ITEMS, PARTNER_NAV_ITEMS } from "@/lib/nav-menus";
 import { shouldOpenPartnerFormFromHref, signalPartnerApplyForm } from "@/lib/partners/form-nav";
 import PageViewTracker from "@/components/analytics/PageViewTracker";
+import PlayStoreBadge from "@/components/site/PlayStoreBadge";
 
 function BrandMark({ light = false, size = "large" }) {
   return (
@@ -168,11 +169,11 @@ function Nav({ currentPath }) {
           </Link>
 
           <Link
-            href="/api-docs"
-            className={currentPath === "/api-docs" ? "active" : ""}
+            href="/leadnator-voice"
+            className={`ln-nav-voice${currentPath === "/leadnator-voice" ? " active" : ""}`}
             onClick={closeMenu}
           >
-            Developer API
+            Leadnator Voice <span className="ln-nav-new">NEW</span>
           </Link>
 
           <Link
@@ -223,7 +224,7 @@ function Footer() {
           </Link>
           <p className="ln-footer-mission">
             The all-in-one AI growth platform — WhatsApp Cloud API, Meta Ads, Email
-            Marketing, Leads CRM, File Storage, Calendar and 20+ AI tools on one login.
+            Marketing, Leads CRM, AI Voice Agents, VoIP Calling, File Storage, Calendar and 20+ AI tools on one login.
           </p>
           <div className="ln-footer-social">
             <a href="https://www.facebook.com/profile.php?id=61588978750821" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebook /></a>
@@ -231,7 +232,9 @@ function Footer() {
             <a href="https://www.youtube.com/@Leadnator" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a>
             <a href="#" aria-label="LinkedIn"><FaLinkedin /></a>
             <a href="https://wa.me/917888341096" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><FaWhatsapp /></a>
+            <a href="mailto:team@leadnator.com" aria-label="Email team@leadnator.com"><FiMail /></a>
           </div>
+          <PlayStoreBadge className="ln-play-badge-footer" />
           <div className="ln-footer-badges">
             <span>✨ Featured in The Indian Express</span>
             <span>🔐 SOC-2 ready infrastructure</span>
@@ -239,8 +242,8 @@ function Footer() {
           {/* Credential badges — one aligned row: Meta partner + registrations */}
           <div className="ln-footer-partner-row">
             <MetaBusinessPartnerBadge />
-            <img src="/image.png" alt="D-U-N-S Registered" className="ln-footer-partner-img" loading="lazy" />
-            <img src="/image2.png" alt="MSME registered — Government of India" className="ln-footer-partner-img" loading="lazy" />
+            <img src="/badge-duns.webp" alt="D-U-N-S Registered" className="ln-footer-partner-img" width={102} height={68} decoding="async" />
+            <img src="/badge-msme.webp" alt="MSME registered — Government of India" className="ln-footer-partner-img" width={68} height={68} decoding="async" />
           </div>
         </div>
 
@@ -256,12 +259,15 @@ function Footer() {
               { label: "Meta Ads",        to: "/features#meta" },
               { label: "Email Marketing", to: "/features#email" },
               { label: "AI Studio",       to: "/features#ai" },
+              { label: "AI Voice Agents", to: "/features#voice" },
+              { label: "VoIP Calling",    to: "/features#calling" },
             ]}
           />
           <FooterCol
             className="ln-footer-col-resources"
             title="Resources"
             items={[
+              { label: "Developer API", to: "/api-docs" },
               { label: "Documentation", to: "/api-docs" },
               { label: "API Reference", to: "/api-docs" },
               { label: "FAQ",           to: "/faq" },
@@ -289,6 +295,10 @@ function Footer() {
 
       <div className="ln-container ln-footer-bottom">
         <span suppressHydrationWarning>© {new Date().getFullYear()} Leadnator. Made with ❤️ in India.</span>
+        <span className="ln-footer-maker">
+          A product of{" "}
+          <a href="https://codelatentlabs.com" target="_blank" rel="noopener noreferrer">CodeLatent Labs</a>
+        </span>
         <span className="ln-footer-regions">India · Singapore · UAE · USA</span>
       </div>
     </footer>

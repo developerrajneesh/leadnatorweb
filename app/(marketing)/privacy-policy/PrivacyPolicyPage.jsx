@@ -89,7 +89,7 @@ export default function PrivacyPolicyPage() {
         </ul>
         <p>
           To exercise these rights, contact us at{" "}
-          <a href="mailto:privacy@leadnator.com">privacy@leadnator.com</a> or via{" "}
+          <a href="mailto:team@leadnator.com">team@leadnator.com</a> or via{" "}
           <LegalLink href="/contact">Contact Us</LegalLink>. We will respond within 30 days.
         </p>
       </LegalSection>
@@ -116,7 +116,7 @@ export default function PrivacyPolicyPage() {
         </p>
         <p>
           Questions? Email{" "}
-          <a href="mailto:privacy@leadnator.com">privacy@leadnator.com</a> or visit our{" "}
+          <a href="mailto:team@leadnator.com">team@leadnator.com</a> or visit our{" "}
           <LegalLink href="/contact">Contact Us</LegalLink> page. WhatsApp: +91 7888341096.
         </p>
       </LegalSection>

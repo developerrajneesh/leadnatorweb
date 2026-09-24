@@ -42,6 +42,8 @@ function BigMatrix() {
       ["File storage (own S3 bucket)",         true, false, false, false],
       ["Calendar & booking links",             true, false, false, false],
       ["AI Studio (20+ tools)",                true, false, false, false],
+      ["AI voice agents (inbound + outbound)", true, false, false, false],
+      ["VoIP calling + call recording",        true, false, false, false],
       ["In-app support tickets + live chat",   true, false, false, false],
     ]},
     { section: "WhatsApp pricing", items: [

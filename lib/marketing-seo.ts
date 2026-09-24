@@ -23,6 +23,12 @@ export const SITELINK_NAV = [
       "WhatsApp Cloud API, Meta Ads, email marketing, CRM pipeline, AI Studio and 20+ growth tools in one platform.",
   },
   {
+    path: "/leadnator-voice",
+    name: "Leadnator Voice",
+    description:
+      "AI voice agents that answer and make calls 24/7, plus VoIP calling with recording, IVR and call logs inside your CRM.",
+  },
+  {
     path: "/pricing",
     name: "Pricing",
     description:
@@ -104,16 +110,15 @@ const LEGAL_PATHS = [
 
 export type MarketingPath =
   | "/"
-  | "/site-map"
   | "/blog"
   | (typeof SITELINK_NAV)[number]["path"]
   | (typeof LEGAL_PATHS)[number];
 
 const BREADCRUMB_LABELS: Record<MarketingPath, string> = {
   "/": "Home",
-  "/site-map": "Sitemap",
   "/blog": "Blog",
   "/features": "Features",
+  "/leadnator-voice": "Leadnator Voice",
   "/pricing": "Pricing",
   "/partners": "Partners",
   "/compare": "Compare",
@@ -148,7 +153,7 @@ export const MARKETING_PAGES: Array<{
     path: "/features",
     title: "Features — WhatsApp Broadcast, Meta Ads, Email CRM & AI Tools",
     description:
-      "Explore Leadnator features: WhatsApp Cloud API broadcasts, chatbot builder, Meta Lead Ads sync, SMTP email marketing, CRM pipeline, S3 storage, booking calendar and AI Studio.",
+      "Explore Leadnator features: WhatsApp Cloud API broadcasts, chatbot builder, Meta Lead Ads sync, SMTP email marketing, CRM pipeline, AI voice agents, VoIP calling, S3 storage, booking calendar and AI Studio.",
     keywords:
       "WhatsApp broadcast India, WhatsApp chatbot builder, Meta Lead Ads CRM, email marketing automation, lead pipeline CRM",
     priority: 0.9,
@@ -202,6 +207,16 @@ export const MARKETING_PAGES: Array<{
     changefreq: "weekly",
   },
   {
+    path: "/leadnator-voice",
+    title: "Leadnator Voice — AI Voice Agents & VoIP Calling for Business",
+    description:
+      "AI voice agents that answer every call, call new leads in under a minute and book meetings in Hindi, English and Hinglish. Plus VoIP calling with recording, IVR and CRM call logs.",
+    keywords:
+      "AI voice agent India, AI calling software, AI receptionist, VoIP calling CRM, cloud telephony CRM, outbound AI calls, Hindi voice bot",
+    priority: 0.9,
+    changefreq: "monthly",
+  },
+  {
     path: "/api-docs",
     title: "API Docs — REST API for WhatsApp, Meta, Email & CRM Webhooks",
     description:
@@ -220,15 +235,6 @@ export const MARKETING_PAGES: Array<{
     changefreq: "monthly",
   },
   {
-    path: "/site-map",
-    title: "Sitemap — All Leadnator Pages",
-    description:
-      "Complete sitemap of Leadnator marketing pages: features, pricing, FAQ, API docs, partners, compare, contact and legal policies.",
-    keywords: "Leadnator sitemap, site navigation",
-    priority: 0.2,
-    changefreq: "monthly",
-  },
-  {
     path: "/about",
     title: "About Us — India's AI Growth CRM for WhatsApp & Meta Ads",
     description:
@@ -241,7 +247,7 @@ export const MARKETING_PAGES: Array<{
     path: "/privacy-policy",
     title: "Privacy Policy — How Leadnator Protects Your Data",
     description:
-      "Leadnator Privacy Policy: data collection, WhatsApp & Meta processing, security, retention and your rights. Contact privacy@leadnator.com for requests.",
+      "Leadnator Privacy Policy: data collection, WhatsApp & Meta processing, security, retention and your rights. Contact team@leadnator.com for requests.",
     keywords: "Leadnator privacy policy, WhatsApp CRM data privacy",
     priority: 0.3,
     changefreq: "yearly",
@@ -393,6 +399,8 @@ export function buildSoftwareApplicationJsonLd() {
       "Email marketing with SMTP",
       "CRM lead pipeline",
       "AI chatbot & automation",
+      "AI voice agents",
+      "VoIP calling",
       "Calendar booking",
       "File storage (S3)",
     ],

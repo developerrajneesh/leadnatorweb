@@ -3,6 +3,7 @@
 import {
   FiCheck, FiLock, FiUsers, FiTrendingUp, FiZap, FiLink, FiLifeBuoy,
   FiFileText, FiCreditCard, FiTool, FiMail, FiClock, FiSend, FiCpu,
+  FiMic, FiPhone, FiPhoneCall, FiPhoneIncoming, FiPhoneOutgoing, FiPhoneMissed, FiCalendar,
 } from "react-icons/fi";
 import { FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { SiMeta } from "react-icons/si";
@@ -25,6 +26,8 @@ const VISUALS = {
   email: EmailVisual,
   crm: CrmVisual,
   ai: AiVisual,
+  voice: VoiceVisual,
+  calling: CallingVisual,
   dashboard: DashboardVisual,
   storage: StorageVisual,
   calendar: CalendarVisual,
@@ -338,6 +341,118 @@ function DashboardVisual() {
       </div>
       <div className="lnf-float" style={{ top: -14, right: -8 }}>
         <span className="lnf-pulse" /> Live · updated now
+      </div>
+    </div>
+  );
+}
+
+/* ---------- AI Voice — live agent console with speaking orb ---------- */
+const VX_CAPTION = ["Perfect,", "I've", "booked", "your", "demo", "for", "Tuesday,", "11", "AM."];
+const VX_STEPS = [
+  { label: "Greet", state: "done" },
+  { label: "Qualify", state: "done" },
+  { label: "Book", state: "live" },
+  { label: "CRM sync", state: "" },
+];
+function VoiceVisual() {
+  return (
+    <div className="lnf-stage lnf-vx-stage" aria-hidden="true">
+      <div className="lnf-vx">
+        <div className="lnf-vx-top">
+          <span className="lnf-vx-agent">
+            <span className="lnf-vx-agent-dot" /> Aria · AI voice agent
+          </span>
+          <span className="lnf-vx-live"><i /> LIVE 01:24</span>
+        </div>
+
+        <div className="lnf-vx-orbwrap">
+          <span className="lnf-vx-ring r1" />
+          <span className="lnf-vx-ring r2" />
+          <span className="lnf-vx-ring r3" />
+          <span className="lnf-vx-orb"><FiMic /></span>
+          <span className="lnf-vx-lang l1">हिंदी</span>
+          <span className="lnf-vx-lang l2">English</span>
+          <span className="lnf-vx-lang l3">Hinglish</span>
+        </div>
+
+        <p className="lnf-vx-caption">
+          {VX_CAPTION.map((w, i) => (
+            <span key={i} style={{ animationDelay: `${i * 0.28}s` }}>{w} </span>
+          ))}
+        </p>
+
+        <ol className="lnf-vx-steps">
+          {VX_STEPS.map(({ label, state }) => (
+            <li key={label} className={state}>
+              <span className="lnf-vx-step-dot">{state === "done" ? <FiCheck /> : null}</span>
+              {label}
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="lnf-vx-card lnf-vx-card-score">
+        <span className="lnf-vx-gauge" style={{ "--v": 86 }}><b>86</b></span>
+        <div>
+          <strong>Hot lead</strong>
+          <small>Budget ✓ · Intent ✓</small>
+        </div>
+      </div>
+      <div className="lnf-vx-card lnf-vx-card-book">
+        <span className="lnf-vx-card-ic"><FiCalendar /></span>
+        <div>
+          <strong>Demo booked</strong>
+          <small>Tue · 11:00 AM</small>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- VoIP Calling — dialer + call log ---------- */
+function CallRow({ Icon, color, name, sub, meta }) {
+  return (
+    <div className="lnf-row">
+      <span className="lnf-row-ic" style={{ background: `${color}18`, color }}><Icon /></span>
+      <div>
+        <div className="lnf-row-t">{name}</div>
+        <div className="lnf-row-s">{sub}</div>
+      </div>
+      <span className="lnf-row-meta">{meta}</span>
+    </div>
+  );
+}
+function CallingVisual() {
+  return (
+    <div className="lnf-stage" aria-hidden="true">
+      <div className="lnf-shell">
+        <div className="lnf-shell-bar">
+          <span className="lnf-dots"><i /><i /><i /></span>
+          <span className="lnf-shell-title">Calls · today</span>
+          <span className="lnf-shell-badge">48 calls</span>
+        </div>
+        <div className="lnf-shell-body">
+          <div className="lnf-oncall">
+            <span className="lnf-avatar" style={{ background: "#14b8a6" }}>RK</span>
+            <div>
+              <div className="lnf-row-t">Rahul Kumar · Hot lead</div>
+              <div className="lnf-row-s"><span className="lnf-pulse" /> On call · 03:12 · recording</div>
+            </div>
+            <span className="lnf-hangup"><FiPhone /></span>
+          </div>
+          <CallRow Icon={FiPhoneOutgoing} color="#14b8a6" name="Anita Desai" sub="Outgoing · 4m 20s" meta="Qualified" />
+          <CallRow Icon={FiPhoneIncoming} color="#0ea5e9" name="+91 98xxx 21044" sub="Incoming · IVR → Sales" meta="New lead" />
+          <CallRow Icon={FiPhoneMissed} color="#ef4444" name="Vikram Singh" sub="Missed · auto WhatsApp sent" meta={<FaWhatsapp />} />
+          <div className="lnf-provrow">
+            <span className="lnf-chip">Twilio</span>
+            <span className="lnf-chip">Exotel</span>
+            <span className="lnf-chip">Plivo</span>
+            <span className="lnf-chip">Virtual numbers</span>
+          </div>
+        </div>
+      </div>
+      <div className="lnf-float" style={{ bottom: -14, right: -6 }}>
+        <FiPhoneCall /> Call logged → CRM
       </div>
     </div>
   );

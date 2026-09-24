@@ -717,7 +717,7 @@ export default function PartnersPage() {
                 <div className="ln-cta-call">
                   Questions? <Link href="/contact">Contact Partner Desk</Link>
                   {" · "}
-                  <a href="mailto:partners@leadnator.com"><FiMail style={{ verticalAlign: "-2px" }} /> partners@leadnator.com</a>
+                  <a href="mailto:team@leadnator.com"><FiMail style={{ verticalAlign: "-2px" }} /> team@leadnator.com</a>
                 </div>
               </div>
             </div>
